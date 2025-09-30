@@ -138,14 +138,41 @@ O projeto utiliza um modelo relacional com as seguintes tabelas principais:
 ```bash
 # Localização dos scripts
 src/main/resources/database/
-├── schema.sql    # Criação das tabelas
-└── data.sql      # Dados de exemplo
+├── create_database.sql  # Criação do banco de dados
+├── schema.sql          # Criação das tabelas
+└── data.sql            # Dados de exemplo
 ```
 
-Para executar os scripts:
-1. Conecte-se ao seu banco MySQL/MariaDB
-2. Execute primeiro o `schema.sql` para criar as tabelas
-3. Execute o `data.sql` para popular com dados de exemplo
+#### Arquivos de Configuração:
+```bash
+# Configurações por ambiente
+src/main/resources/
+├── application.properties      # Configurações principais
+├── application-dev.properties  # Configurações de desenvolvimento
+└── application-prod.properties # Configurações de produção
+```
+
+Para configurar o banco de dados:
+
+1. **Instale o MySQL** (versão 8.0 ou superior)
+
+2. **Execute os scripts na seguinte ordem:**
+```bash
+# 1. Criar o banco de dados
+mysql -u root -p < src/main/resources/database/create_database.sql
+
+# 2. Criar as tabelas
+mysql -u root -p ateliemb_db < src/main/resources/database/schema.sql
+
+# 3. Popular com dados de exemplo
+mysql -u root -p ateliemb_db < src/main/resources/database/data.sql
+```
+
+3. **Configurar credenciais** no `application.properties`:
+```properties
+spring.datasource.username=root
+spring.datasource.password=SUA_SENHA_AQUI
+```
 
 ## 🎯 Funcionalidades Planejadas
 
