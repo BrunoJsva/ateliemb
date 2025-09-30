@@ -1,10 +1,10 @@
-# Ateliê MB
+# Confeitaria MB
 
-Uma aplicação web desenvolvida com Spring Boot para gerenciamento de ateliê.
+Uma aplicação web desenvolvida com Spring Boot para gerenciamento de confeitaria.
 
 ## 📋 Descrição
 
-Este projeto é uma aplicação web desenvolvida como parte de um projeto de extensão universitária, criada para auxiliar no gerenciamento e operações de um ateliê. A aplicação utiliza tecnologias modernas do ecossistema Spring para fornecer uma solução robusta e escalável.
+Este projeto é uma aplicação web desenvolvida como parte de um projeto de extensão universitária, criada para auxiliar no gerenciamento e operações de uma confeitaria. A aplicação utiliza tecnologias modernas do ecossistema Spring para fornecer uma solução robusta e escalável.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -108,28 +108,57 @@ mvn test
 - **`src/main/java`** - Código fonte da aplicação
 - **`src/main/resources/static`** - Arquivos estáticos (CSS, JavaScript, imagens)
 - **`src/main/resources/templates`** - Templates Thymeleaf para as páginas web
+- **`src/main/resources/database`** - Scripts SQL do banco de dados
 - **`src/test/java`** - Testes unitários e de integração
 
 ## 🔧 Configuração
 
 As configurações da aplicação estão localizadas em:
 - **`src/main/resources/application.properties`** - Configurações principais da aplicação
+- **`src/main/resources/database/schema.sql`** - Script de criação das tabelas
+- **`src/main/resources/database/data.sql`** - Dados de exemplo para desenvolvimento
 
 Atualmente, apenas o nome da aplicação está configurado:
 ```properties
 spring.application.name=ateliemb
 ```
 
+### 🗄️ Banco de Dados
+
+O projeto utiliza um modelo relacional com as seguintes tabelas principais:
+
+- **`tb_cliente`** - Cadastro de clientes (opcional para vendas no balcão)
+- **`tb_fornecedor`** - Cadastro de fornecedores de ingredientes e produtos
+- **`tb_produto`** - Catálogo de produtos da confeitaria
+- **`tb_estoque`** - Controle de estoque por produto
+- **`tb_venda`** - Cabeçalho das transações de venda
+- **`tb_item_venda`** - Itens detalhados de cada venda
+
+#### Scripts SQL Disponíveis:
+```bash
+# Localização dos scripts
+src/main/resources/database/
+├── schema.sql    # Criação das tabelas
+└── data.sql      # Dados de exemplo
+```
+
+Para executar os scripts:
+1. Conecte-se ao seu banco MySQL/MariaDB
+2. Execute primeiro o `schema.sql` para criar as tabelas
+3. Execute o `data.sql` para popular com dados de exemplo
+
 ## 🎯 Funcionalidades Planejadas
 
 Este projeto está em desenvolvimento inicial. As funcionalidades a serem implementadas incluem:
 
 - [ ] Sistema de autenticação e autorização
-- [ ] Gerenciamento de produtos do ateliê
-- [ ] Controle de estoque
-- [ ] Sistema de pedidos
+- [ ] Gerenciamento de produtos da confeitaria
+- [ ] Controle de estoque de doces, salgados e bebidas
+- [ ] Sistema de pedidos e encomendas
 - [ ] Dashboard administrativo
-- [ ] Relatórios de vendas
+- [ ] Relatórios de vendas e produtos mais vendidos
+- [ ] Controle de validade dos produtos
+- [ ] Sistema de receitas e ingredientes
 
 ## 👥 Contribuindo
 
@@ -153,4 +182,4 @@ Se você encontrar algum problema ou tiver dúvidas, por favor abra uma [issue](
 
 ---
 
-⭐ **Projeto de Extensão Universitária** - Desenvolvido com 💙 para auxiliar no gerenciamento de ateliês.
+⭐ **Projeto de Extensão Universitária** - Desenvolvido com 💙 para auxiliar no gerenciamento de confeitarias.
