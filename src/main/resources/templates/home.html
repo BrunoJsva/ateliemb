@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}">Confeitaria MB</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navegação Principal -->
+    <nav class="barra-navegacao">
+        <div class="container-navegacao">
+            <a href="/" class="marca-confeitaria">🎂 Confeitaria MB</a>
+            <button class="botao-menu-mobile" onclick="alternarMenu()">☰</button>
+            <ul class="menu-navegacao" id="menuNavegacao">
+                <li><a href="/" class="link-navegacao">Home</a></li>
+                <li><a href="/sobre" class="link-navegacao">Sobre</a></li>
+                <li><a href="/produtos" class="link-navegacao">Produtos</a></li>
+                <li><a href="/contato" class="link-navegacao">Contato</a></li>
+                <li><a href="/getDataBase" class="link-navegacao">Sistema</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Seção Principal de Destaque -->
+    <section class="secao-destaque-principal">
+        <div class="container-destaque">
+            <h1 th:text="${titulo}">Confeitaria MB</h1>
+            <p class="subtitle" th:text="${subtitulo}">Doces e Sabores Artesanais</p>
+            <p class="description" th:text="${descricao}">Oferecemos os melhores doces, bolos e salgados da cidade com ingredientes frescos e muito carinho.</p>
+            <div>
+                <a href="/produtos" class="botao botao-primario">🍪 Ver Produtos</a>
+                <a href="/contato" class="botao botao-secundario">📞 Fazer Pedido</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção de Produtos -->
+    <section class="secao-produtos">
+        <div class="container">
+            <div class="titulo-secao">
+                <h2>⭐ Nossos Destaques</h2>
+                <p>Conheça alguns dos nossos produtos mais queridos pelos clientes</p>
+            </div>
+            
+            <div class="grade-produtos">
+                <div class="cartao-produto">
+                    <div class="icone-produto">🎂</div>
+                    <h3>Bolos Artesanais</h3>
+                    <p>Bolos de chocolate, cenoura e frutas vermelhas feitos com ingredientes premium</p>
+                    <span class="etiqueta-preco">A partir de R$ 7,90</span>
+                </div>
+                
+                <div class="cartao-produto">
+                    <div class="icone-produto">🍪</div>
+                    <h3>Doces Gourmet</h3>
+                    <p>Trufas, brigadeiros e bombons artesanais com chocolate belga</p>
+                    <span class="etiqueta-preco">A partir de R$ 5,50</span>
+                </div>
+                
+                <div class="cartao-produto">
+                    <div class="icone-produto">🥐</div>
+                    <h3>Salgados Frescos</h3>
+                    <p>Coxinhas, empadas e pães de açúcar feitos diariamente</p>
+                    <span class="etiqueta-preco">A partir de R$ 3,50</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção Sobre a Confeitaria -->
+    <section class="secao-sobre">
+        <div class="container">
+            <div class="conteudo-sobre">
+                <div class="texto-sobre">
+                    <h2>❤️ Feito com Amor</h2>
+                    <p class="lead" th:text="${mensagemBemVindo}">Bem-vindo à nossa confeitaria!</p>
+                    <p>
+                        Cada produto é cuidadosamente preparado por nossa equipe de confeiteiros experientes, 
+                        usando apenas ingredientes frescos e de qualidade. Nossa paixão pela confeitaria se 
+                        reflete em cada doce que criamos.
+                    </p>
+                    <div class="caracteristicas">
+                        <div class="caracteristica">
+                            <div class="icone-caracteristica">🏆</div>
+                            <h4>Qualidade</h4>
+                            <small>Ingredientes Premium</small>
+                        </div>
+                        <div class="caracteristica">
+                            <div class="icone-caracteristica">⏰</div>
+                            <h4>Frescos</h4>
+                            <small>Feitos Diariamente</small>
+                        </div>
+                        <div class="caracteristica">
+                            <div class="icone-caracteristica">😊</div>
+                            <h4>Satisfação</h4>
+                            <small>Cliente Feliz</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="visual-sobre">
+                    <div class="icone-loja">🏪</div>
+                    <p>📍 Localizada no coração da cidade</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="rodape">
+        <div class="container">
+            <div class="conteudo-rodape">
+                <div class="secao-rodape">
+                    <h3>🎂 Confeitaria MB</h3>
+                    <p>Doces e sabores artesanais feitos com carinho para adoçar seu dia.</p>
+                    <div class="links-sociais">
+                        <a href="#" class="link-social">f</a>
+                        <a href="#" class="link-social">📷</a>
+                        <a href="#" class="link-social">📱</a>
+                    </div>
+                </div>
+                <div class="secao-rodape">
+                    <h3>Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/sobre">Sobre</a></li>
+                        <li><a href="/produtos">Produtos</a></li>
+                        <li><a href="/contato">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="secao-rodape">
+                    <h3>Contato</h3>
+                    <p>📞 (11) 9999-9999</p>
+                    <p>✉️ contato@confeitariamb.com.br</p>
+                    <p>📍 Rua dos Doces, 123 - São Paulo/SP</p>
+                </div>
+            </div>
+            <div class="rodape-inferior">
+                <p>&copy; 2025 Confeitaria MB. Todos os direitos reservados.</p>
+                <p><small>Desenvolvido com ❤️ por Bruno Silva</small></p>
+            </div>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/main.js}"></script>
+</body>
+</html>
