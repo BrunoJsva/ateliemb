@@ -31,7 +31,7 @@ public class HomeController {
         model.addAttribute("titulo", "Confeitaria MB");
         model.addAttribute("subtitulo", "Doces e Sabores Artesanais");
         model.addAttribute("mensagemBemVindo", "Bem-vindo à nossa confeitaria!");
-        model.addAttribute("descricao", "Oferecemos os melhores doces, bolos e salgados da cidade com ingredientes frescos e muito carinho.");
+        model.addAttribute("descricao", "Oferecemos os melhores doces, bolos e tortas da cidade com ingredientes frescos e muito carinho.");
         
         return "home";
     }
@@ -59,12 +59,19 @@ public class HomeController {
     /**
      * Página de produtos da confeitaria.
      * 
+     * Renderiza o catálogo completo de produtos organizados por categoria
+     * (bolos, doces, tortas e produtos especiais) com preços e descrições.
+     * 
      * @param model Model para passar dados para a view
      * @return nome do template Thymeleaf
      */
     @GetMapping("/produtos")
     public String produtos(Model model) {
         model.addAttribute("titulo", "Produtos - Confeitaria MB");
+        model.addAttribute("totalCategorias", 4);
+        model.addAttribute("totalProdutos", 20);
+        model.addAttribute("horarioFuncionamento", "Segunda a Sábado: 8h às 19h | Domingo: 9h às 15h");
+        model.addAttribute("taxaEntrega", "R$ 8,00");
         
         return "produtos";
     }
