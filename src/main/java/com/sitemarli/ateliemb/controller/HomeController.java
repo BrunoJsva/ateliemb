@@ -28,8 +28,8 @@ public class HomeController {
      */
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("titulo", "Confeitaria MB");
-        model.addAttribute("subtitulo", "Doces e Sabores Artesanais");
+        model.addAttribute("titulo", "Ateliê M&B");
+        model.addAttribute("subtitulo", "Bolos para festas e Doces Artesanais");
         model.addAttribute("mensagemBemVindo", "Bem-vindo à nossa confeitaria!");
         model.addAttribute("descricao", "Oferecemos os melhores doces, bolos e tortas da cidade com ingredientes frescos e muito carinho.");
         

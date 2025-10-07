@@ -49,7 +49,7 @@
                         <li>✓ Recheio tradicional</li>
                         <li>✓ Decoração básica</li>
                     </ul>
-                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarBoloBase('Bolo SEM FRUTAS', 85.00)">
+                    <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('boloBase', 'Bolo SEM FRUTAS', 85.00)">
                         🛒 Adicionar ao Pedido
                     </button>
                 </div>
@@ -66,7 +66,7 @@
                         <li>✓ Recheio tradicional</li>
                         <li>✓ Decoração básica</li>
                     </ul>
-                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarBoloBase('Bolo COM FRUTAS', 95.00)">
+                    <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('boloBase', 'Bolo COM FRUTAS', 95.00)">
                         🛒 Adicionar ao Pedido
                     </button>
                 </div>
@@ -81,7 +81,7 @@
                         <li>✓ Acabamento premium</li>
                         <li>✓ Segurança no transporte</li>
                     </ul>
-                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('Cake Board MDF', 5.00)">
+                    <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('caixaTransporte', 'Cake Board MDF', 5.00)">
                         🛒 Adicionar ao Pedido
                     </button>
                 </div>
@@ -103,15 +103,15 @@
                         <span class="preco-personalizacao">+ R$ 10,00</span>
                     </div>
                     <ul class="lista-opcoes-personalizacao">
-                        <li onclick="carrinho.adicionarMassaEspecial('Red Velvet', 10.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Red Velvet</span>
                             <span class="descricao-opcao">Clássica massa vermelha aveludada</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('massaEspecial', 'Red Velvet', 10.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
-                        <li onclick="carrinho.adicionarMassaEspecial('Maracujá', 10.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Maracujá</span>
                             <span class="descricao-opcao">Massa tropical e refrescante</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('massaEspecial', 'Maracujá', 10.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
                     </ul>
                 </div>
