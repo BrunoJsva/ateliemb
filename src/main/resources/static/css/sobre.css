@@ -1,0 +1,337 @@
+/* Estilos específicos para a página Sobre */
+
+/* Hero Section da página Sobre */
+.hero-sobre {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    padding: 150px 0 100px;
+    text-align: center;
+}
+
+.hero-sobre h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.hero-sobre .subtitle {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+
+/* Seção História */
+.historia {
+    padding: 80px 0;
+    background: white;
+}
+
+.historia-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.historia-text h2 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.historia-text .lead {
+    font-size: 1.3rem;
+    color: #3498db;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.historia-text p {
+    color: #666;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+/* Timeline */
+.timeline {
+    margin-top: 3rem;
+}
+
+.timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #3498db;
+}
+
+.timeline-year {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3498db;
+    min-width: 80px;
+    margin-right: 2rem;
+}
+
+.timeline-content h4 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-content p {
+    color: #666;
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* Ilustração do confeiteiro */
+.historia-visual {
+    text-align: center;
+    padding: 2rem;
+}
+
+.baker-illustration {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.baker-icon {
+    font-size: 8rem;
+    margin-bottom: 1rem;
+}
+
+.baker-illustration p {
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.baker-illustration small {
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Seção Valores */
+.valores {
+    padding: 80px 0;
+    background: #f8f9fa;
+}
+
+.valores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.valor-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.valor-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.valor-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.valor-card h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.valor-card p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.valor-card ul {
+    list-style: none;
+    text-align: left;
+}
+
+.valor-card li {
+    color: #666;
+    margin-bottom: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+/* Seção Equipe */
+.equipe {
+    padding: 80px 0;
+    background: white;
+}
+
+.equipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.membro-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.membro-card:hover {
+    transform: translateY(-5px);
+}
+
+.membro-avatar {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+.membro-card h4 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.cargo {
+    color: #3498db;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.bio {
+    color: #666;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+/* Seção Certificações */
+.certificacoes {
+    padding: 80px 0;
+    background: #f8f9fa;
+}
+
+.certificacoes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.cert-card {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.cert-card:hover {
+    transform: translateY(-3px);
+}
+
+.cert-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.cert-card h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.cert-card p {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Call to Action */
+.cta-sobre {
+    padding: 80px 0;
+    background: linear-gradient(135deg, #ff6b6b, #ffa726);
+    color: white;
+    text-align: center;
+}
+
+.cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.cta-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Link ativo na navegação */
+.link-navegacao.ativo {
+    color: #ff6b6b !important;
+    font-weight: 600;
+}
+
+/* Container padrão para compatibilidade */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-sobre h1 {
+        font-size: 2.5rem;
+    }
+    
+    .historia-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .timeline-item {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .timeline-year {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .valores-grid,
+    .equipe-grid,
+    .certificacoes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .baker-icon {
+        font-size: 6rem;
+    }
+}

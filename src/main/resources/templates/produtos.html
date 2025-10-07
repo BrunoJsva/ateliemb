@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${titulo}">Cardápio - Marli Confeitaria</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/produtos.css}">
+    <link rel="stylesheet" th:href="@{/css/carrinho.css}">
+</head>
+<body>
+    <!-- Navegação Principal -->
+    <nav class="barra-navegacao">
+        <div class="container-navegacao">
+            <a href="/" class="marca-confeitaria">🎂 Confeitaria MB</a>
+            <button class="botao-menu-mobile" onclick="alternarMenu()">☰</button>
+            <ul class="menu-navegacao" id="menuNavegacao">
+                <li><a href="/" class="link-navegacao">Home</a></li>
+                <li><a href="/sobre" class="link-navegacao">Sobre</a></li>
+                <li><a href="/produtos" class="link-navegacao ativo">Produtos</a></li>
+                <li><a href="/contato" class="link-navegacao">Contato</a></li>
+                <li><a href="/getDataBase" class="link-navegacao">Sistema</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-produtos">
+        <div class="container">
+            <div class="hero-conteudo">
+                <h1>🎂 Cardápio Marli Confeitaria</h1>
+                <p class="subtitulo">Bolos artesanais personalizados para tornar seu momento ainda mais especial</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valores Base -->
+    <section class="secao-valores-base">
+        <div class="container">
+            <h2 class="titulo-secao">💰 Valores Base dos Bolos</h2>
+            <div class="grade-valores-base">
+                <div class="cartao-valor-base">
+                    <div class="icone-grande">🎂</div>
+                    <h3>Bolo SEM FRUTAS</h3>
+                    <p class="descricao">Massa simples com recheio tradicional</p>
+                    <div class="preco-destaque">R$ 85,00</div>
+                    <ul class="lista-beneficios">
+                        <li>✓ Massa de sua escolha</li>
+                        <li>✓ Recheio tradicional</li>
+                        <li>✓ Decoração básica</li>
+                    </ul>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarBoloBase('Bolo SEM FRUTAS', 85.00)">
+                        🛒 Adicionar ao Pedido
+                    </button>
+                </div>
+
+                <div class="cartao-valor-base destaque">
+                    <span class="badge-popular">Mais Pedido</span>
+                    <div class="icone-grande">🍓</div>
+                    <h3>Bolo COM FRUTAS</h3>
+                    <p class="descricao">Massa simples com frutas frescas</p>
+                    <div class="preco-destaque">R$ 95,00</div>
+                    <ul class="lista-beneficios">
+                        <li>✓ Massa de sua escolha</li>
+                        <li>✓ Frutas frescas</li>
+                        <li>✓ Recheio tradicional</li>
+                        <li>✓ Decoração básica</li>
+                    </ul>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarBoloBase('Bolo COM FRUTAS', 95.00)">
+                        🛒 Adicionar ao Pedido
+                    </button>
+                </div>
+
+                <div class="cartao-valor-base">
+                    <div class="icone-grande">📦</div>
+                    <h3>Cake Board MDF</h3>
+                    <p class="descricao">Base reforçada para seu bolo</p>
+                    <div class="preco-destaque">+ R$ 5,00</div>
+                    <ul class="lista-beneficios">
+                        <li>✓ Material resistente</li>
+                        <li>✓ Acabamento premium</li>
+                        <li>✓ Segurança no transporte</li>
+                    </ul>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('Cake Board MDF', 5.00)">
+                        🛒 Adicionar ao Pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Massas e Recheios -->
+    <section class="secao-personalizacao">
+        <div class="container">
+            <h2 class="titulo-secao-branco">✨ Massas e Recheios Especiais</h2>
+            <p class="subtitulo-branco">Transforme seu bolo em uma experiência única</p>
+            
+            <div class="grade-opcoes-personalizacao">
+                <div class="cartao-personalizacao">
+                    <div class="header-personalizacao">
+                        <span class="icone-personalizacao">🎨</span>
+                        <h3>Massas Especiais</h3>
+                        <span class="preco-personalizacao">+ R$ 10,00</span>
+                    </div>
+                    <ul class="lista-opcoes-personalizacao">
+                        <li onclick="carrinho.adicionarMassaEspecial('Red Velvet', 10.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Red Velvet</span>
+                            <span class="descricao-opcao">Clássica massa vermelha aveludada</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                        <li onclick="carrinho.adicionarMassaEspecial('Maracujá', 10.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Maracujá</span>
+                            <span class="descricao-opcao">Massa tropical e refrescante</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cartao-personalizacao destaque">
+                    <span class="badge-premium">Premium</span>
+                    <div class="header-personalizacao">
+                        <span class="icone-personalizacao">🍫</span>
+                        <h3>Recheios Premium</h3>
+                        <span class="preco-personalizacao">+ R$ 20,00</span>
+                    </div>
+                    <ul class="lista-opcoes-personalizacao">
+                        <li onclick="carrinho.adicionarRecheioEspecial('Mousse de Nutella', 20.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Mousse de Nutella</span>
+                            <span class="descricao-opcao">Cremoso e irresistível</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                        <li onclick="carrinho.adicionarRecheioEspecial('Limão Siciliano', 20.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Limão Siciliano</span>
+                            <span class="descricao-opcao">Cítrico e refrescante</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                        <li onclick="carrinho.adicionarRecheioEspecial('Rafaello', 20.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Rafaello</span>
+                            <span class="descricao-opcao">Coco e chocolate branco</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                        <li onclick="carrinho.adicionarRecheioEspecial('Maracujá Trufado', 20.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Maracujá Trufado</span>
+                            <span class="descricao-opcao">Tropical com chocolate</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                        <li onclick="carrinho.adicionarRecheioEspecial('Ouro Branco', 20.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Ouro Branco</span>
+                            <span class="descricao-opcao">Chocolate branco cremoso</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                        <li onclick="carrinho.adicionarRecheioEspecial('Geleia de Morango', 20.00)" style="cursor: pointer;">
+                            <span class="nome-opcao">Geleia de Morango</span>
+                            <span class="descricao-opcao">Frutas vermelhas frescas</span>
+                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Decoração -->
+    <section class="secao-decoracao">
+        <div class="container">
+            <h2 class="titulo-secao">🎨 Opções de Decoração</h2>
+            <p class="subtitulo">Deixe seu bolo ainda mais especial com nossas decorações personalizadas</p>
+            
+            <div class="grade-decoracao">
+                <!-- Toppers -->
+                <div class="categoria-decoracao">
+                    <h3 class="titulo-categoria-decoracao">
+                        <span class="icone-categoria">🎀</span>
+                        Toppers
+                    </h3>
+                    <div class="lista-decoracao">
+                        <div class="item-decoracao">
+                            <img src="https://via.placeholder.com/100x100/FFB6C1/FFFFFF?text=Topper" 
+                                 alt="Topper Simples" class="thumb-decoracao">
+                            <div class="info-decoracao">
+                                <h4>Topper Simples</h4>
+                                <p>Nome ou frase personalizada</p>
+                                <span class="preco-decoracao">A partir de R$ 20,00</span>
+                                <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarDecoracao('Topper Simples', 20.00, 'topper')" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            </div>
+                        </div>
+                        <div class="item-decoracao">
+                            <img src="https://via.placeholder.com/100x100/DDA0DD/FFFFFF?text=2D/3D" 
+                                 alt="Topper 2D/3D" class="thumb-decoracao">
+                            <div class="info-decoracao">
+                                <h4>Topper 2D/3D</h4>
+                                <p>Personagens ou temas elaborados</p>
+                                <span class="preco-decoracao">A partir de R$ 23,00</span>
+                                <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarDecoracao('Topper 2D/3D', 23.00, 'topper')" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Acabamentos -->
+                <div class="categoria-decoracao">
+                    <h3 class="titulo-categoria-decoracao">
+                        <span class="icone-categoria">✨</span>
+                        Acabamentos
+                    </h3>
+                    <div class="grade-acabamentos">
+                        <div class="item-acabamento" onclick="carrinho.adicionarDecoracao('Brilho/Glitter', 10.00, 'acabamento')" style="cursor: pointer;">
+                            <span class="icone-acabamento">✨</span>
+                            <span class="nome-acabamento">Brilho/Glitter</span>
+                            <span class="preco-acabamento">R$ 10,00</span>
+                        </div>
+                        <div class="item-acabamento" onclick="carrinho.adicionarDecoracao('Colocação em Pó', 5.00, 'acabamento')" style="cursor: pointer;">
+                            <span class="icone-acabamento">🎨</span>
+                            <span class="nome-acabamento">Colocação em Pó</span>
+                            <span class="preco-acabamento">R$ 5,00</span>
+                        </div>
+                        <div class="item-acabamento" onclick="carrinho.adicionarDecoracao('Pérolas', 5.00, 'acabamento')" style="cursor: pointer;">
+                            <span class="icone-acabamento">⚪</span>
+                            <span class="nome-acabamento">Pérolas</span>
+                            <span class="preco-acabamento">R$ 5,00</span>
+                        </div>
+                        <div class="item-acabamento" onclick="carrinho.adicionarDecoracao('Granulado', 5.00, 'acabamento')" style="cursor: pointer;">
+                            <span class="icone-acabamento">🌈</span>
+                            <span class="nome-acabamento">Granulado</span>
+                            <span class="preco-acabamento">R$ 5,00</span>
+                        </div>
+                        <div class="item-acabamento" onclick="carrinho.adicionarDecoracao('Dripcake', 5.00, 'acabamento')" style="cursor: pointer;">
+                            <span class="icone-acabamento">🍫</span>
+                            <span class="nome-acabamento">Dripcake</span>
+                            <span class="preco-acabamento">R$ 5,00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complementos -->
+                <div class="categoria-decoracao">
+                    <h3 class="titulo-categoria-decoracao">
+                        <span class="icone-categoria">🍬</span>
+                        Complementos
+                    </h3>
+                    <div class="grade-complementos">
+                        <div class="item-complemento">
+                            <img src="https://via.placeholder.com/80x80/8B4513/FFFFFF?text=🍫" 
+                                 alt="Brigadeiros" class="thumb-complemento">
+                            <div class="info-complemento">
+                                <h5>Brigadeiros</h5>
+                                <span class="preco-complemento">R$ 0,80/un</span>
+                                <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarComplemento('Brigadeiros', 0.80, 1)" style="margin-top: 0.5rem; width: 100%; padding: 0.5rem;">🛒 Adicionar</button>
+                            </div>
+                        </div>
+                        <div class="item-complemento">
+                            <img src="https://via.placeholder.com/80x80/D2691E/FFFFFF?text=KitKat" 
+                                 alt="Kitkat" class="thumb-complemento">
+                            <div class="info-complemento">
+                                <h5>Kitkat</h5>
+                                <span class="preco-complemento">R$ 2,50/un</span>
+                                <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarComplemento('Kitkat', 2.50, 1)" style="margin-top: 0.5rem; width: 100%; padding: 0.5rem;">🛒 Adicionar</button>
+                            </div>
+                        </div>
+                        <div class="item-complemento">
+                            <img src="https://via.placeholder.com/80x80/FF69B4/FFFFFF?text=🦋" 
+                                 alt="Borboletas" class="thumb-complemento">
+                            <div class="info-complemento">
+                                <h5>Borboletas</h5>
+                                <span class="preco-complemento">R$ 2,00/un</span>
+                                <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarComplemento('Borboletas', 2.00, 1)" style="margin-top: 0.5rem; width: 100%; padding: 0.5rem;">🛒 Adicionar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Caixas para Transporte -->
+    <section class="secao-caixas">
+        <div class="container">
+            <h2 class="titulo-secao">📦 Caixas para Transporte</h2>
+            <p class="subtitulo">Proteja seu bolo com nossas caixas resistentes e práticas</p>
+            
+            <div class="grade-caixas">
+                <div class="cartao-caixa">
+                    <div class="visual-caixa tamanho-pp">
+                        <span class="label-tamanho">PP</span>
+                    </div>
+                    <h4>Tamanho PP</h4>
+                    <p class="dimensao">Até 1kg</p>
+                    <span class="preco-caixa">R$ 5,00</span>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('PP', 5.00)" style="margin-top: 1rem; width: 100%;">🛒 Selecionar</button>
+                </div>
+
+                <div class="cartao-caixa">
+                    <div class="visual-caixa tamanho-p">
+                        <span class="label-tamanho">P</span>
+                    </div>
+                    <h4>Tamanho P</h4>
+                    <p class="dimensao">1kg - 1,5kg</p>
+                    <span class="preco-caixa">R$ 6,00</span>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('P', 6.00)" style="margin-top: 1rem; width: 100%;">🛒 Selecionar</button>
+                </div>
+
+                <div class="cartao-caixa">
+                    <div class="visual-caixa tamanho-m">
+                        <span class="label-tamanho">M</span>
+                    </div>
+                    <h4>Tamanho M</h4>
+                    <p class="dimensao">1,5kg - 2kg</p>
+                    <span class="preco-caixa">R$ 13,00</span>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('M', 13.00)" style="margin-top: 1rem; width: 100%;">🛒 Selecionar</button>
+                </div>
+
+                <div class="cartao-caixa destaque">
+                    <span class="badge-popular">Mais Usado</span>
+                    <div class="visual-caixa tamanho-g">
+                        <span class="label-tamanho">G</span>
+                    </div>
+                    <h4>Tamanho G</h4>
+                    <p class="dimensao">2kg - 3kg</p>
+                    <span class="preco-caixa">R$ 16,00</span>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('G', 16.00)" style="margin-top: 1rem; width: 100%;">🛒 Selecionar</button>
+                </div>
+
+                <div class="cartao-caixa">
+                    <div class="visual-caixa tamanho-gg">
+                        <span class="label-tamanho">GG</span>
+                    </div>
+                    <h4>Tamanho GG</h4>
+                    <p class="dimensao">3kg - 4kg</p>
+                    <span class="preco-caixa">R$ 19,00</span>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('GG', 19.00)" style="margin-top: 1rem; width: 100%;">🛒 Selecionar</button>
+                </div>
+
+                <div class="cartao-caixa">
+                    <div class="visual-caixa tamanho-xg">
+                        <span class="label-tamanho">XG</span>
+                    </div>
+                    <h4>Tamanho XG</h4>
+                    <p class="dimensao">Acima de 4kg</p>
+                    <span class="preco-caixa">R$ 23,00</span>
+                    <button class="btn-adicionar-carrinho" onclick="carrinho.adicionarCaixaTransporte('XG', 23.00)" style="margin-top: 1rem; width: 100%;">🛒 Selecionar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Final -->
+    <section class="secao-cta-final">
+        <div class="container">
+            <div class="conteudo-cta">
+                <h2>🎉 Pronto para Encomendar?</h2>
+                <p>Monte seu bolo perfeito e faça sua encomenda agora!</p>
+                <a href="https://linktr.ee/marliconfeitariaME?fbclid=PAb21jcANRRphleHRuA2FlbQIxMQABp9hJHJABei7o7Woan34n-a_Zi6oTP92U0lWMZ47_sro7uDK8h8qW3UsSg40N_aem_IPTEs8e1EYUOaJq-hfTQdA" 
+                   target="_blank" 
+                   class="botao-cta-grande">
+                    📞 Fazer Encomenda
+                </a>
+                <p class="info-adicional">
+                    <small>💬 Entre em contato e receba atendimento personalizado</small>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="rodape">
+        <div class="container">
+            <div class="conteudo-rodape">
+                <div class="secao-rodape">
+                    <h3>🎂 Confeitaria MB</h3>
+                    <p>Doces e sabores artesanais feitos com carinho para adoçar seu dia.</p>
+                </div>
+                <div class="secao-rodape">
+                    <h3>Links Rápidos</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/sobre">Sobre</a></li>
+                        <li><a href="/produtos">Produtos</a></li>
+                        <li><a href="/contato">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="secao-rodape">
+                    <h3>Contato</h3>
+                    <p>📞 (11) 9999-9999</p>
+                    <p>✉️ contato@confeitariamb.com.br</p>
+                </div>
+            </div>
+            <div class="rodape-inferior">
+                <p>&copy; 2025 Confeitaria MB. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Botão Flutuante do Carrinho -->
+    <div class="botao-carrinho-flutuante" onclick="toggleCarrinho()">
+        <span class="icone-carrinho-flutuante">🛒</span>
+        <span id="contador-carrinho" style="display: none;">0</span>
+    </div>
+
+    <!-- Overlay do Carrinho -->
+    <div class="overlay-carrinho" id="overlay-carrinho" onclick="fecharCarrinho()"></div>
+
+    <!-- Painel Lateral do Carrinho -->
+    <div class="painel-carrinho" id="painel-carrinho">
+        <div class="header-painel-carrinho">
+            <h3>🛒 Meu Pedido</h3>
+            <button class="btn-fechar-painel" onclick="fecharCarrinho()">×</button>
+        </div>
+        <div id="resumo-carrinho">
+            <!-- Conteúdo dinâmico do carrinho será inserido aqui -->
+        </div>
+    </div>
+
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/carrinho.js}"></script>
+    <script>
+        // Funções para controlar o painel do carrinho
+        function toggleCarrinho() {
+            const painel = document.getElementById('painel-carrinho');
+            const overlay = document.getElementById('overlay-carrinho');
+            painel.classList.toggle('aberto');
+            overlay.classList.toggle('ativo');
+        }
+
+        function fecharCarrinho() {
+            const painel = document.getElementById('painel-carrinho');
+            const overlay = document.getElementById('overlay-carrinho');
+            painel.classList.remove('aberto');
+            overlay.classList.remove('ativo');
+        }
+    </script>
+</body>
+</html>
