@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Avançado do Carrinho</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .teste-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .teste-btn:hover {
+            background: #218838;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        #resumo-carrinho {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 2px solid #d4a574;
+            border-radius: 10px;
+        }
+        .debug-info {
+            background: #e9ecef;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste Avançado do Sistema de Carrinho</h1>
+    
+    <h2>Status do Sistema</h2>
+    <div id="status-sistema">Carregando...</div>
+    
+    <h2>Ações de Teste</h2>
+    <button class="teste-btn" onclick="testarAdicionar()">🛒 Adicionar Bolo de Chocolate</button>
+    <button class="teste-btn" onclick="testarAdicionarDecoracao()">✨ Adicionar Decoração</button>
+    <button class="teste-btn" onclick="testarCarregarCarrinho()">🔄 Carregar Carrinho</button>
+    <button class="teste-btn" onclick="testarLimparCarrinho()">🗑️ Limpar Carrinho</button>
+    
+    <h2>Debug Info</h2>
+    <div id="debug-info" class="debug-info">
+        Aguardando testes...
+    </div>
+    
+    <h2>Resultado</h2>
+    <div id="resultado">
+        Nenhum teste executado ainda.
+    </div>
+    
+    <h2>Resumo do Carrinho</h2>
+    <div id="resumo-carrinho">
+        <p>Carrinho não carregado ainda.</p>
+    </div>
+    
+    <script src="/js/carrinho.js"></script>
+    <script>
+        // Aguardar carrinho estar pronto
+        function aguardarCarrinho() {
+            return new Promise((resolve) => {
+                const verificar = () => {
+                    if (window.carrinho) {
+                        resolve(window.carrinho);
+                    } else {
+                        setTimeout(verificar, 100);
+                    }
+                };
+                verificar();
+            });
+        }
+        
+        // Atualizar status do sistema
+        function atualizarStatus() {
+            const statusDiv = document.getElementById('status-sistema');
+            if (window.carrinho) {
+                statusDiv.innerHTML = `
+                    <span style="color: green;">✅ Carrinho carregado</span><br>
+                    <small>Celular: ${window.carrinho.celular || 'Não informado'}</small><br>
+                    <small>API URL: ${window.carrinho.apiUrl}</small>
+                `;
+            } else {
+                statusDiv.innerHTML = '<span style="color: red;">❌ Carrinho não carregado</span>';
+            }
+        }
+        
+        // Atualizar debug info
+        function atualizarDebug(info) {
+            document.getElementById('debug-info').innerHTML = info;
+        }
+        
+        // Testar adicionar item
+        async function testarAdicionar() {
+            try {
+                atualizarDebug('Testando adição de item...');
+                const carrinho = await aguardarCarrinho();
+                
+                atualizarDebug('Adicionando Bolo de Chocolate...');
+                await carrinho.adicionarItem('bolo', 'Bolo de Chocolate', 85.00, 1);
+                
+                document.getElementById('resultado').innerHTML = 
+                    '<span style="color: green;">✅ Item adicionado com sucesso!</span>';
+                
+                atualizarDebug('Item adicionado, atualizando interface...');
+                carrinho.atualizarInterface();
+                
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = 
+                    `<span style="color: red;">❌ Erro: ${error.message}</span>`;
+                atualizarDebug(`Erro: ${error.message}`);
+            }
+        }
+        
+        // Testar adicionar decoração
+        async function testarAdicionarDecoracao() {
+            try {
+                atualizarDebug('Testando adição de decoração...');
+                const carrinho = await aguardarCarrinho();
+                
+                await carrinho.adicionarDecoracao('Topper Simples', 20.00, 'topper');
+                
+                document.getElementById('resultado').innerHTML = 
+                    '<span style="color: green;">✅ Decoração adicionada com sucesso!</span>';
+                    
+                carrinho.atualizarInterface();
+                
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = 
+                    `<span style="color: red;">❌ Erro: ${error.message}</span>`;
+                atualizarDebug(`Erro: ${error.message}`);
+            }
+        }
+        
+        // Testar carregar carrinho
+        async function testarCarregarCarrinho() {
+            try {
+                atualizarDebug('Testando carregamento do carrinho...');
+                const carrinho = await aguardarCarrinho();
+                
+                await carrinho.carregarCarrinhoServidor();
+                
+                document.getElementById('resultado').innerHTML = 
+                    '<span style="color: green;">✅ Carrinho carregado com sucesso!</span>';
+                    
+                atualizarDebug(`Carrinho carregado: ${carrinho.carrinho.totalItens || 0} itens, R$ ${carrinho.carrinho.valorTotal || 0}`);
+                carrinho.atualizarInterface();
+                
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = 
+                    `<span style="color: red;">❌ Erro: ${error.message}</span>`;
+                atualizarDebug(`Erro: ${error.message}`);
+            }
+        }
+        
+        // Testar limpar carrinho
+        async function testarLimparCarrinho() {
+            try {
+                atualizarDebug('Testando limpeza do carrinho...');
+                const carrinho = await aguardarCarrinho();
+                
+                await carrinho.limparCarrinho();
+                
+                document.getElementById('resultado').innerHTML = 
+                    '<span style="color: green;">✅ Carrinho limpo com sucesso!</span>';
+                    
+                carrinho.atualizarInterface();
+                
+            } catch (error) {
+                document.getElementById('resultado').innerHTML = 
+                    `<span style="color: red;">❌ Erro: ${error.message}</span>`;
+                atualizarDebug(`Erro: ${error.message}`);
+            }
+        }
+        
+        // Inicializar quando carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🧪 Página de teste carregada');
+            
+            // Atualizar status periodicamente
+            setInterval(atualizarStatus, 1000);
+            
+            // Carregar carrinho inicial depois de um tempo
+            setTimeout(async () => {
+                try {
+                    const carrinho = await aguardarCarrinho();
+                    atualizarDebug('Carrinho pronto para testes');
+                    await carrinho.carregarCarrinhoServidor();
+                    carrinho.atualizarInterface();
+                } catch (error) {
+                    atualizarDebug(`Erro ao carregar carrinho inicial: ${error.message}`);
+                }
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

@@ -15,11 +15,8 @@
             <a href="/" class="marca-confeitaria">🎂 Confeitaria MB</a>
             <button class="botao-menu-mobile" onclick="alternarMenu()">☰</button>
             <ul class="menu-navegacao" id="menuNavegacao">
-                <li><a href="/" class="link-navegacao">Home</a></li>
-                <li><a href="/sobre" class="link-navegacao">Sobre</a></li>
-                <li><a href="/produtos" class="link-navegacao ativo">Produtos</a></li>
-                <li><a href="/contato" class="link-navegacao">Contato</a></li>
-                <li><a href="/getDataBase" class="link-navegacao">Sistema</a></li>
+                <li><a href="/" class="link-navegacao ativo">Produtos</a></li>
+                <li><a href="/login" class="link-navegacao">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -124,35 +121,35 @@
                         <span class="preco-personalizacao">+ R$ 20,00</span>
                     </div>
                     <ul class="lista-opcoes-personalizacao">
-                        <li onclick="carrinho.adicionarRecheioEspecial('Mousse de Nutella', 20.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Mousse de Nutella</span>
                             <span class="descricao-opcao">Cremoso e irresistível</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('recheioEspecial', 'Mousse de Nutella', 20.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
-                        <li onclick="carrinho.adicionarRecheioEspecial('Limão Siciliano', 20.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Limão Siciliano</span>
                             <span class="descricao-opcao">Cítrico e refrescante</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('recheioEspecial', 'Limão Siciliano', 20.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
-                        <li onclick="carrinho.adicionarRecheioEspecial('Rafaello', 20.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Rafaello</span>
                             <span class="descricao-opcao">Coco e chocolate branco</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('recheioEspecial', 'Rafaello', 20.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
-                        <li onclick="carrinho.adicionarRecheioEspecial('Maracujá Trufado', 20.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Maracujá Trufado</span>
                             <span class="descricao-opcao">Tropical com chocolate</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('recheioEspecial', 'Maracujá Trufado', 20.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
-                        <li onclick="carrinho.adicionarRecheioEspecial('Ouro Branco', 20.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Ouro Branco</span>
                             <span class="descricao-opcao">Chocolate branco cremoso</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('recheioEspecial', 'Ouro Branco', 20.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
-                        <li onclick="carrinho.adicionarRecheioEspecial('Geleia de Morango', 20.00)" style="cursor: pointer;">
+                        <li style="cursor: pointer;">
                             <span class="nome-opcao">Geleia de Morango</span>
                             <span class="descricao-opcao">Frutas vermelhas frescas</span>
-                            <button class="btn-adicionar-carrinho" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
+                            <button class="btn-adicionar-carrinho" onclick="adicionarAoCarrinho('recheioEspecial', 'Geleia de Morango', 20.00)" style="margin-top: 0.5rem; width: 100%;">🛒 Adicionar</button>
                         </li>
                     </ul>
                 </div>
@@ -372,10 +369,8 @@
                 <div class="secao-rodape">
                     <h3>Links Rápidos</h3>
                     <ul>
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/sobre">Sobre</a></li>
-                        <li><a href="/produtos">Produtos</a></li>
-                        <li><a href="/contato">Contato</a></li>
+                        <li><a href="/">Produtos</a></li>
+                        <li><a href="/login">Login</a></li>
                     </ul>
                 </div>
                 <div class="secao-rodape">

@@ -3,6 +3,7 @@ package com.sitemarli.ateliemb.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.*;
 
 /**
  * Entidade JPA destinada a testar a conexão com o banco de dados. 🔩
@@ -22,37 +23,21 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "CONEXAO-TESTE-DATASE")
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class DataBaseEntity {
 
     /**
      * Chave primária da tabela PING.
      */
     @Id
+    @EqualsAndHashCode.Include
     private Long id;
 
-    /**
-     * Construtor padrão sem argumentos, exigido pelo framework de persistência
-     * (JPA).
-     */
-    public DataBaseEntity() {
-        // Construtor padrão exigido pelo JPA
-    }
-
-    /**
-     * Retorna o identificador único da entidade.
-     *
-     * @return O valor do ID.
-     */
-    public Long getId() {
-        return id;
-    }
-
-    /**
-     * Define o identificador único da entidade.
-     *
-     * @param id O novo valor do ID.
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
+    // Lombok gera automaticamente:
+    // - Construtor padrão (@NoArgsConstructor)
+    // - Getters e setters (@Data)
+    // - equals() e hashCode() baseados no ID (@EqualsAndHashCode)
+    // - toString() (@Data)
 }

@@ -1,185 +1,314 @@
 // Sistema de Carrinho de Compras - Marli Confeitaria
-// Gerencia a construção personalizada de bolos
+// Integrado com Backend REST API
 
 class CarrinhoConfeitaria {
     constructor() {
-        this.carrinho = this.carregarCarrinho();
+        this.apiUrl = 'http://localhost:8080/api/carrinho';
+        this.celular = null;
+        this.carrinho = {
+            itens: [],
+            valorTotal: 0,
+            totalItens: 0
+        };
         this.inicializar();
     }
 
-    // Carregar carrinho do localStorage
-    carregarCarrinho() {
-        const carrinhoSalvo = localStorage.getItem('carrinhoMarliConfeitaria');
-        return carrinhoSalvo ? JSON.parse(carrinhoSalvo) : {
-            boloBase: null,
-            massaEspecial: null,
-            recheioEspecial: null,
-            decoracoes: [],
-            complementos: [],
-            caixaTransporte: null,
-            observacoes: '',
-            total: 0
-        };
+    // Obter celular do cliente
+    async obterCelular() {
+        if (!this.celular) {
+            // Verificar se já está salvo no sessionStorage
+            this.celular = sessionStorage.getItem('celularCliente');
+            
+            if (!this.celular) {
+                // Solicitar celular ao cliente
+                this.celular = prompt('📱 Digite seu número de celular (com DDD):\n\nExemplo: 11999999999');
+                
+                if (!this.celular || this.celular.trim() === '') {
+                    alert('❌ É necessário informar o celular para continuar!');
+                    return null;
+                }
+                
+                // Limpar e validar o celular
+                this.celular = this.celular.replace(/\D/g, '');
+                
+                if (this.celular.length < 10 || this.celular.length > 11) {
+                    alert('❌ Número de celular inválido! Digite apenas números (10 ou 11 dígitos).');
+                    this.celular = null;
+                    return null;
+                }
+                
+                // Salvar no sessionStorage
+                sessionStorage.setItem('celularCliente', this.celular);
+                
+                // Mostrar mensagem de boas-vindas
+                alert(`✅ Olá! Seu carrinho foi vinculado ao celular: ${this.formatarCelular(this.celular)}\n\nAgora você pode adicionar produtos!`);
+            }
+        }
+        return this.celular;
     }
 
-    // Salvar carrinho no localStorage
-    salvarCarrinho() {
-        localStorage.setItem('carrinhoMarliConfeitaria', JSON.stringify(this.carrinho));
-        this.atualizarInterface();
-        this.calcularTotal();
+    // Formatar celular para exibição
+    formatarCelular(celular) {
+        if (celular.length === 11) {
+            return `(${celular.substr(0,2)}) ${celular.substr(2,5)}-${celular.substr(7,4)}`;
+        } else if (celular.length === 10) {
+            return `(${celular.substr(0,2)}) ${celular.substr(2,4)}-${celular.substr(6,4)}`;
+        }
+        return celular;
     }
 
-    // Inicializar eventos
-    inicializar() {
-        this.atualizarInterface();
-        this.calcularTotal();
-        console.log('🛒 Sistema de carrinho inicializado!');
-    }
-
-    // Adicionar bolo base
-    adicionarBoloBase(tipo, preco) {
-        this.carrinho.boloBase = { tipo, preco };
-        this.salvarCarrinho();
-        this.mostrarNotificacao(`Bolo base "${tipo}" adicionado!`, 'sucesso');
-    }
-
-    // Adicionar massa especial
-    adicionarMassaEspecial(nome, preco) {
-        this.carrinho.massaEspecial = { nome, preco };
-        this.salvarCarrinho();
-        this.mostrarNotificacao(`Massa especial "${nome}" adicionada!`, 'sucesso');
-    }
-
-    // Adicionar recheio especial
-    adicionarRecheioEspecial(nome, preco) {
-        this.carrinho.recheioEspecial = { nome, preco };
-        this.salvarCarrinho();
-        this.mostrarNotificacao(`Recheio "${nome}" adicionado!`, 'sucesso');
-    }
-
-    // Adicionar decoração
-    adicionarDecoracao(nome, preco, tipo) {
-        const decoracaoExistente = this.carrinho.decoracoes.find(d => d.nome === nome);
+    // Inicializar sistema
+    async inicializar() {
+        console.log('🛒 Inicializando sistema de carrinho...');
         
-        if (decoracaoExistente) {
-            this.mostrarNotificacao(`"${nome}" já está no carrinho!`, 'aviso');
+        // Tentar obter celular salvo
+        this.celular = sessionStorage.getItem('celularCliente');
+        
+        if (this.celular) {
+            console.log(`📱 Celular encontrado: ${this.celular}`);
+            // Carregar carrinho existente do servidor em background
+            this.carregarCarrinhoServidor().catch(error => {
+                console.warn('Erro ao carregar carrinho do servidor:', error);
+            });
+        } else {
+            console.log('📱 Nenhum celular salvo encontrado');
+        }
+        
+        // Atualizar interface imediatamente
+        this.atualizarInterface();
+        console.log('✅ Sistema de carrinho inicializado!');
+    }
+
+    // Carregar carrinho do servidor
+    async carregarCarrinhoServidor() {
+        if (!this.celular) {
+            console.warn('Tentativa de carregar carrinho sem celular');
+            return;
+        }
+        
+        try {
+            console.log(`🔄 Carregando carrinho para ${this.celular}...`);
+            const response = await fetch(`${this.apiUrl}/${this.celular}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const resultado = await response.json();
+            console.log('📦 Resposta do servidor:', resultado);
+            
+            // Atualizar carrinho com dados do servidor
+            if (resultado.itens) {
+                this.carrinho = {
+                    itens: resultado.itens || [],
+                    valorTotal: resultado.valorTotal || 0,
+                    totalItens: resultado.totalItens || resultado.itens.length || 0
+                };
+                console.log(`✅ Carrinho carregado: ${this.carrinho.totalItens} itens, R$ ${this.carrinho.valorTotal}`);
+            } else if (resultado.existe === false) {
+                // Carrinho vazio
+                this.carrinho = {
+                    itens: [],
+                    valorTotal: 0,
+                    totalItens: 0
+                };
+                console.log('📭 Carrinho vazio');
+            }
+            
+            // Atualizar interface após carregar
+            this.atualizarInterface();
+            
+        } catch (error) {
+            console.error('❌ Erro ao carregar carrinho:', error);
+            // Manter carrinho local em caso de erro
+        }
+    }
+
+    // Adicionar item ao carrinho (método genérico)
+    async adicionarItem(tipoProduto, nomeProduto, preco, quantidade = 1, categoria = null) {
+        console.log(`🛒 Adicionando item: ${nomeProduto} (${tipoProduto}) - R$ ${preco}`);
+        
+        const celular = await this.obterCelular();
+        if (!celular) {
+            console.error('❌ Não foi possível obter celular');
             return;
         }
 
-        this.carrinho.decoracoes.push({ nome, preco, tipo });
-        this.salvarCarrinho();
-        this.mostrarNotificacao(`Decoração "${nome}" adicionada!`, 'sucesso');
+        try {
+            console.log('📡 Enviando requisição para API...');
+            const response = await fetch(`${this.apiUrl}/adicionar`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    celular: celular,
+                    tipoProduto: tipoProduto,
+                    nomeProduto: nomeProduto,
+                    preco: preco,
+                    quantidade: quantidade,
+                    categoria: categoria
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const resultado = await response.json();
+            console.log('📦 Resposta da API:', resultado);
+            
+            if (resultado.sucesso) {
+                this.mostrarNotificacao(`✅ "${nomeProduto}" adicionado ao carrinho!`, 'sucesso');
+                console.log(`✅ Item adicionado! Total: R$ ${resultado.valorTotal}, Itens: ${resultado.totalItens}`);
+                
+                // Carregar carrinho atualizado do servidor
+                await this.carregarCarrinhoServidor();
+            } else {
+                console.error('❌ API retornou erro:', resultado.mensagem);
+                this.mostrarNotificacao(`❌ Erro: ${resultado.mensagem}`, 'erro');
+            }
+        } catch (error) {
+            console.error('❌ Erro ao adicionar item:', error);
+            this.mostrarNotificacao(`❌ Erro ao adicionar item: ${error.message}`, 'erro');
+        }
     }
 
-    // Remover decoração
-    removerDecoracao(nome) {
-        this.carrinho.decoracoes = this.carrinho.decoracoes.filter(d => d.nome !== nome);
-        this.salvarCarrinho();
-        this.mostrarNotificacao(`"${nome}" removido!`, 'info');
+    // Adicionar bolo base
+    async adicionarBoloBase(tipo, preco) {
+        await this.adicionarItem('boloBase', tipo, preco);
+    }
+
+    // Adicionar massa especial
+    async adicionarMassaEspecial(nome, preco) {
+        await this.adicionarItem('massaEspecial', nome, preco);
+    }
+
+    // Adicionar recheio especial
+    async adicionarRecheioEspecial(nome, preco) {
+        await this.adicionarItem('recheioEspecial', nome, preco);
+    }
+
+    // Adicionar decoração
+    async adicionarDecoracao(nome, preco, categoria) {
+        await this.adicionarItem('decoracao', nome, preco, 1, categoria);
     }
 
     // Adicionar complemento
-    adicionarComplemento(nome, precoUnitario, quantidade = 1) {
-        const complementoExistente = this.carrinho.complementos.find(c => c.nome === nome);
-        
-        if (complementoExistente) {
-            complementoExistente.quantidade += quantidade;
-        } else {
-            this.carrinho.complementos.push({ nome, precoUnitario, quantidade });
-        }
-        
-        this.salvarCarrinho();
-        this.mostrarNotificacao(`${quantidade}x ${nome} adicionado(s)!`, 'sucesso');
+    async adicionarComplemento(nome, preco, quantidade) {
+        await this.adicionarItem('complemento', nome, preco, quantidade);
+    }
+
+    // Adicionar caixa de transporte
+    async adicionarCaixaTransporte(tamanho, preco) {
+        await this.adicionarItem('caixaTransporte', `Caixa ${tamanho}`, preco);
+    }
+
+    // Adicionar recheio especial
+    async adicionarRecheioEspecial(nome, preco) {
+        await this.adicionarItem('recheioEspecial', nome, preco);
+    }
+
+    // Adicionar decoração
+    async adicionarDecoracao(nome, preco, categoria = null) {
+        await this.adicionarItem('decoracao', nome, preco, 1, categoria);
+    }
+
+    // Remover decoração
+    async removerDecoracao(nome) {
+        // TODO: Implementar remoção via API quando necessário
+        this.mostrarNotificacao(`"${nome}" removido!`, 'info');
+        await this.carregarCarrinhoServidor();
+    }
+
+    // Adicionar complemento
+    async adicionarComplemento(nome, precoUnitario, quantidade = 1) {
+        await this.adicionarItem('complemento', nome, precoUnitario, quantidade);
     }
 
     // Atualizar quantidade de complemento
-    atualizarQuantidadeComplemento(nome, quantidade) {
-        const complemento = this.carrinho.complementos.find(c => c.nome === nome);
-        
-        if (complemento) {
-            if (quantidade <= 0) {
-                this.removerComplemento(nome);
-            } else {
-                complemento.quantidade = quantidade;
-                this.salvarCarrinho();
-            }
+    async atualizarQuantidadeComplemento(nome, quantidade) {
+        // TODO: Implementar atualização de quantidade via API quando necessário
+        if (quantidade <= 0) {
+            await this.removerComplemento(nome);
+        } else {
+            console.log(`Atualizando quantidade de ${nome} para ${quantidade}`);
+            await this.carregarCarrinhoServidor();
         }
     }
 
     // Remover complemento
-    removerComplemento(nome) {
-        this.carrinho.complementos = this.carrinho.complementos.filter(c => c.nome !== nome);
-        this.salvarCarrinho();
+    async removerComplemento(nome) {
+        // TODO: Implementar remoção via API quando necessário
         this.mostrarNotificacao(`"${nome}" removido!`, 'info');
+        await this.carregarCarrinhoServidor();
     }
 
     // Adicionar caixa de transporte
-    adicionarCaixaTransporte(tamanho, preco) {
-        this.carrinho.caixaTransporte = { tamanho, preco };
-        this.salvarCarrinho();
-        this.mostrarNotificacao(`Caixa tamanho "${tamanho}" adicionada!`, 'sucesso');
+    async adicionarCaixaTransporte(tamanho, preco) {
+        await this.adicionarItem('caixaTransporte', `Caixa ${tamanho}`, preco);
     }
 
     // Adicionar observações
-    adicionarObservacoes(texto) {
-        this.carrinho.observacoes = texto;
-        this.salvarCarrinho();
+    async adicionarObservacoes(texto) {
+        // TODO: Implementar observações via API quando necessário
+        console.log('Observações:', texto);
     }
 
     // Calcular total
     calcularTotal() {
-        let total = 0;
-
-        // Bolo base
-        if (this.carrinho.boloBase) {
-            total += this.carrinho.boloBase.preco;
-        }
-
-        // Massa especial
-        if (this.carrinho.massaEspecial) {
-            total += this.carrinho.massaEspecial.preco;
-        }
-
-        // Recheio especial
-        if (this.carrinho.recheioEspecial) {
-            total += this.carrinho.recheioEspecial.preco;
-        }
-
-        // Decorações
-        this.carrinho.decoracoes.forEach(dec => {
-            total += dec.preco;
-        });
-
-        // Complementos
-        this.carrinho.complementos.forEach(comp => {
-            total += comp.precoUnitario * comp.quantidade;
-        });
-
-        // Caixa de transporte
-        if (this.carrinho.caixaTransporte) {
-            total += this.carrinho.caixaTransporte.preco;
-        }
-
-        this.carrinho.total = total;
-        this.salvarCarrinho();
-        return total;
+        // Total agora vem do servidor via this.carrinho.valorTotal
+        return this.carrinho.valorTotal || 0;
     }
 
     // Limpar carrinho
-    limparCarrinho() {
+    async limparCarrinho() {
         if (confirm('Tem certeza que deseja limpar todo o carrinho?')) {
-            this.carrinho = {
-                boloBase: null,
-                massaEspecial: null,
-                recheioEspecial: null,
-                decoracoes: [],
-                complementos: [],
-                caixaTransporte: null,
-                observacoes: '',
-                total: 0
-            };
-            this.salvarCarrinho();
-            this.mostrarNotificacao('Carrinho limpo!', 'info');
+            try {
+                const celular = await this.obterCelular();
+                if (!celular) {
+                    console.error('❌ Não foi possível obter celular');
+                    return;
+                }
+
+                console.log('🗑️ Limpando carrinho no servidor...');
+                const response = await fetch(`${this.apiUrl}/${celular}/limpar`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const resultado = await response.json();
+                console.log('📦 Resposta da API:', resultado);
+
+                if (resultado.sucesso) {
+                    // Limpar carrinho local também
+                    this.carrinho = {
+                        itens: [],
+                        valorTotal: 0,
+                        totalItens: 0
+                    };
+                    this.mostrarNotificacao('✅ Carrinho limpo!', 'sucesso');
+                    this.atualizarInterface();
+                    console.log('✅ Carrinho limpo com sucesso!');
+                } else {
+                    this.mostrarNotificacao(`❌ Erro: ${resultado.mensagem}`, 'erro');
+                }
+            } catch (error) {
+                console.error('❌ Erro ao limpar carrinho:', error);
+                this.mostrarNotificacao(`❌ Erro ao limpar carrinho: ${error.message}`, 'erro');
+            }
         }
     }
 
@@ -193,16 +322,9 @@ class CarrinhoConfeitaria {
     atualizarContadorCarrinho() {
         const contador = document.getElementById('contador-carrinho');
         if (contador) {
-            let itens = 0;
-            if (this.carrinho.boloBase) itens++;
-            if (this.carrinho.massaEspecial) itens++;
-            if (this.carrinho.recheioEspecial) itens++;
-            itens += this.carrinho.decoracoes.length;
-            itens += this.carrinho.complementos.length;
-            if (this.carrinho.caixaTransporte) itens++;
-
-            contador.textContent = itens;
-            contador.style.display = itens > 0 ? 'flex' : 'none';
+            const totalItens = this.carrinho.totalItens || this.carrinho.itens?.length || 0;
+            contador.textContent = totalItens;
+            contador.style.display = totalItens > 0 ? 'flex' : 'none';
         }
     }
 
@@ -212,89 +334,45 @@ class CarrinhoConfeitaria {
         if (!resumo) return;
 
         const total = this.calcularTotal();
+        const itens = this.carrinho.itens || [];
         
         let html = '<div class="conteudo-resumo-carrinho">';
         html += '<h3>🛒 Seu Pedido</h3>';
 
         // Verificar se há itens
-        const temItens = this.carrinho.boloBase || 
-                        this.carrinho.massaEspecial || 
-                        this.carrinho.recheioEspecial || 
-                        this.carrinho.decoracoes.length > 0 || 
-                        this.carrinho.complementos.length > 0 || 
-                        this.carrinho.caixaTransporte;
-
-        if (!temItens) {
-            html += '<p class="carrinho-vazio">Seu carrinho está vazio. Comece escolhendo um bolo base!</p>';
+        if (itens.length === 0) {
+            html += '<p class="carrinho-vazio">Seu carrinho está vazio. Comece escolhendo um produto!</p>';
         } else {
             html += '<div class="lista-itens-carrinho">';
 
-            // Bolo Base
-            if (this.carrinho.boloBase) {
+            // Listar todos os itens do carrinho
+            itens.forEach(item => {
+                const preco = parseFloat(item.preco || 0);
+                const quantidade = item.quantidade || 1;
+                const subtotal = preco * quantidade;
+                
+                // Ícone baseado no tipo de produto
+                let icone = '🛒';
+                switch(item.tipoProduto) {
+                    case 'boloBase': icone = '🎂'; break;
+                    case 'massaEspecial': icone = '🎨'; break;
+                    case 'recheioEspecial': icone = '🍫'; break;
+                    case 'decoracao': icone = '✨'; break;
+                    case 'complemento': icone = '🍪'; break;
+                    case 'caixaTransporte': icone = '📦'; break;
+                }
+                
                 html += `
                     <div class="item-carrinho">
-                        <span class="nome-item">🎂 ${this.carrinho.boloBase.tipo}</span>
-                        <span class="preco-item">R$ ${this.carrinho.boloBase.preco.toFixed(2)}</span>
-                    </div>
-                `;
-            }
-
-            // Massa Especial
-            if (this.carrinho.massaEspecial) {
-                html += `
-                    <div class="item-carrinho">
-                        <span class="nome-item">🎨 ${this.carrinho.massaEspecial.nome}</span>
-                        <span class="preco-item">+ R$ ${this.carrinho.massaEspecial.preco.toFixed(2)}</span>
-                    </div>
-                `;
-            }
-
-            // Recheio Especial
-            if (this.carrinho.recheioEspecial) {
-                html += `
-                    <div class="item-carrinho">
-                        <span class="nome-item">🍫 ${this.carrinho.recheioEspecial.nome}</span>
-                        <span class="preco-item">+ R$ ${this.carrinho.recheioEspecial.preco.toFixed(2)}</span>
-                    </div>
-                `;
-            }
-
-            // Decorações
-            this.carrinho.decoracoes.forEach(dec => {
-                html += `
-                    <div class="item-carrinho">
-                        <span class="nome-item">✨ ${dec.nome}</span>
-                        <div class="acoes-item">
-                            <span class="preco-item">R$ ${dec.preco.toFixed(2)}</span>
-                            <button onclick="carrinho.removerDecoracao('${dec.nome}')" class="btn-remover-mini">×</button>
-                        </div>
+                        <span class="nome-item">${icone} ${item.nomeProduto}</span>
+                        <span class="quantidade-item">${quantidade > 1 ? `${quantidade}x ` : ''}</span>
+                        <span class="preco-item">R$ ${subtotal.toFixed(2)}</span>
                     </div>
                 `;
             });
-
-            // Complementos
-            this.carrinho.complementos.forEach(comp => {
-                const subtotal = comp.precoUnitario * comp.quantidade;
-                html += `
-                    <div class="item-carrinho">
-                        <span class="nome-item">🍬 ${comp.nome} (${comp.quantidade}x)</span>
-                        <div class="acoes-item">
-                            <span class="preco-item">R$ ${subtotal.toFixed(2)}</span>
-                            <button onclick="carrinho.removerComplemento('${comp.nome}')" class="btn-remover-mini">×</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            // Caixa de Transporte
-            if (this.carrinho.caixaTransporte) {
-                html += `
-                    <div class="item-carrinho">
-                        <span class="nome-item">📦 Caixa ${this.carrinho.caixaTransporte.tamanho}</span>
-                        <span class="preco-item">R$ ${this.carrinho.caixaTransporte.preco.toFixed(2)}</span>
-                    </div>
-                `;
             }
+
+
 
             html += '</div>'; // Fim lista-itens-carrinho
 
@@ -303,6 +381,13 @@ class CarrinhoConfeitaria {
                 <div class="total-carrinho">
                     <span class="label-total">Total:</span>
                     <span class="valor-total">R$ ${total.toFixed(2)}</span>
+                </div>
+            `;
+
+            // Total
+            html += `
+                <div class="total-carrinho">
+                    <strong>Total: R$ ${(this.carrinho.valorTotal || this.carrinho.total || 0).toFixed(2)}</strong>
                 </div>
             `;
 
@@ -317,7 +402,6 @@ class CarrinhoConfeitaria {
                     </button>
                 </div>
             `;
-        }
 
         html += '</div>'; // Fim conteudo-resumo-carrinho
         resumo.innerHTML = html;
@@ -460,61 +544,94 @@ function fecharModalPedido() {
     }
 }
 
-// Funções wrapper para garantir que o carrinho existe
-function adicionarAoCarrinho(tipo, ...args) {
-    if (!carrinho) {
-        console.error('Carrinho ainda não foi inicializado!');
-        alert('Por favor, aguarde o carregamento da página...');
+// Função wrapper para adicionar ao carrinho (usada nos onclick dos botões)
+async function adicionarAoCarrinho(tipo, ...args) {
+    console.log('🛒 Tentando adicionar ao carrinho:', tipo, args);
+    
+    // Tentar inicializar o carrinho se não existir
+    if (!window.carrinho && !carrinho) {
+        console.log('⚠️ Carrinho não encontrado, inicializando...');
+        if (!inicializarCarrinho()) {
+            alert('❌ Erro ao inicializar carrinho. Recarregue a página.');
+            return;
+        }
+        // Aguardar um pouco para a API estar pronta
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    
+    const carrinhoInstance = window.carrinho || carrinho;
+    
+    if (!carrinhoInstance) {
+        alert('❌ Carrinho não disponível. Recarregue a página.');
         return;
     }
     
     try {
         switch(tipo) {
             case 'boloBase':
-                carrinho.adicionarBoloBase(...args);
+                await carrinhoInstance.adicionarBoloBase(...args);
                 break;
             case 'massaEspecial':
-                carrinho.adicionarMassaEspecial(...args);
+                await carrinhoInstance.adicionarMassaEspecial(...args);
                 break;
             case 'recheioEspecial':
-                carrinho.adicionarRecheioEspecial(...args);
+                await carrinhoInstance.adicionarRecheioEspecial(...args);
                 break;
             case 'decoracao':
-                carrinho.adicionarDecoracao(...args);
+                await carrinhoInstance.adicionarDecoracao(...args);
                 break;
             case 'complemento':
-                carrinho.adicionarComplemento(...args);
+                await carrinhoInstance.adicionarComplemento(...args);
                 break;
             case 'caixaTransporte':
-                carrinho.adicionarCaixaTransporte(...args);
+                await carrinhoInstance.adicionarCaixaTransporte(...args);
                 break;
             default:
                 console.error('Tipo de produto desconhecido:', tipo);
+                alert('❌ Tipo de produto desconhecido: ' + tipo);
         }
     } catch (error) {
         console.error('Erro ao adicionar ao carrinho:', error);
-        alert('Erro ao adicionar item. Por favor, tente novamente.');
+        alert('❌ Erro ao adicionar item: ' + error.message);
     }
 }
 
-// Inicializar carrinho globalmente para acesso imediato
+// Inicializar carrinho globalmente
 let carrinho;
 
-// Inicializar assim que o script carregar
-(function() {
-    if (typeof carrinho === 'undefined') {
-        carrinho = new CarrinhoConfeitaria();
-        console.log('🎂 Carrinho da Confeitaria carregado!');
+// Função de inicialização robusta
+function inicializarCarrinho() {
+    try {
+        if (!window.carrinho) {
+            window.carrinho = new CarrinhoConfeitaria();
+            console.log('🎂 Carrinho da Confeitaria inicializado!');
+        }
+        // Também manter referência global para compatibilidade
+        carrinho = window.carrinho;
+        return true;
+    } catch (error) {
+        console.error('Erro ao inicializar carrinho:', error);
+        return false;
     }
-})();
+}
 
-// Garantir que está pronto quando DOM carregar
-document.addEventListener('DOMContentLoaded', function() {
-    if (!carrinho) {
-        carrinho = new CarrinhoConfeitaria();
-        console.log('🎂 Carrinho da Confeitaria carregado via DOMContentLoaded!');
-    } else {
-        carrinho.atualizarInterface();
-        console.log('🎂 Carrinho já estava carregado, interface atualizada!');
+// Tentar inicializar imediatamente
+if (document.readyState === 'loading') {
+    // DOM ainda carregando
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🎂 DOM carregado, inicializando carrinho...');
+        inicializarCarrinho();
+    });
+} else {
+    // DOM já carregado
+    console.log('🎂 DOM já carregado, inicializando carrinho imediatamente...');
+    inicializarCarrinho();
+}
+
+// Backup: inicializar após um pequeno delay se necessário
+setTimeout(function() {
+    if (!window.carrinho) {
+        console.log('🎂 Inicialização de backup do carrinho...');
+        inicializarCarrinho();
     }
-});
+}, 1000);

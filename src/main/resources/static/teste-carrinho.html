@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Teste do Carrinho</title>
+</head>
+<body>
+    <h1>Teste do Sistema de Carrinho</h1>
+    
+    <div style="margin: 20px;">
+        <h3>Teste Básico</h3>
+        <button onclick="testarCarrinho()" style="padding: 10px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            🧪 Testar Carrinho
+        </button>
+        
+        <button onclick="adicionarAoCarrinho('boloBase', 'Bolo Teste', 85.00)" style="padding: 10px; background: #2196F3; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+            🛒 Adicionar Item Teste
+        </button>
+        
+        <button onclick="mostrarDebug()" style="padding: 10px; background: #FF9800; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+            🔍 Mostrar Debug
+        </button>
+    </div>
+    
+    <div id="resultado" style="margin: 20px; padding: 10px; background: #f5f5f5; border-radius: 5px; min-height: 100px;">
+        <strong>Resultado dos testes aparecerá aqui...</strong>
+    </div>
+    
+    <script src="/js/carrinho-debug.js"></script>
+    
+    <script>
+        function testarCarrinho() {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML = '<strong>Testando carrinho...</strong><br>';
+            
+            // Verificar se o carrinho foi carregado
+            if (window.carrinhoDebug) {
+                resultado.innerHTML += '✅ CarrinhoDebug carregado<br>';
+                resultado.innerHTML += `✅ Inicializado: ${window.carrinhoDebug.inicializado}<br>`;
+                resultado.innerHTML += `✅ API URL: ${window.carrinhoDebug.apiUrl}<br>`;
+                
+                // Testar obtenção de celular
+                window.carrinhoDebug.obterCelular().then(celular => {
+                    if (celular) {
+                        resultado.innerHTML += `✅ Celular obtido: ${celular}<br>`;
+                    } else {
+                        resultado.innerHTML += '❌ Falha ao obter celular<br>';
+                    }
+                });
+                
+            } else {
+                resultado.innerHTML += '❌ CarrinhoDebug NÃO carregado<br>';
+            }
+            
+            // Verificar função global
+            if (typeof adicionarAoCarrinho === 'function') {
+                resultado.innerHTML += '✅ Função adicionarAoCarrinho disponível<br>';
+            } else {
+                resultado.innerHTML += '❌ Função adicionarAoCarrinho NÃO disponível<br>';
+            }
+            
+            // Verificar debug
+            if (window.debugCarrinho) {
+                resultado.innerHTML += `✅ Debug inicializado: ${window.debugCarrinho.inicializado}<br>`;
+                resultado.innerHTML += `✅ Erros: ${window.debugCarrinho.erros.length}<br>`;
+                resultado.innerHTML += `✅ Logs: ${window.debugCarrinho.logs.length}<br>`;
+            } else {
+                resultado.innerHTML += '❌ Debug NÃO disponível<br>';
+            }
+        }
+        
+        // Executar teste automático quando a página carregar
+        window.addEventListener('load', function() {
+            setTimeout(testarCarrinho, 1000);
+        });
+    </script>
+</body>
+</html>

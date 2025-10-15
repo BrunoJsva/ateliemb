@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Teste Rápido - Carrinho</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .btn { padding: 10px 15px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; }
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-primary { background: #2196F3; color: white; }
+        .btn-warning { background: #FF9800; color: white; }
+        .resultado { margin: 20px 0; padding: 15px; background: #f5f5f5; border-radius: 5px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste Rápido do Carrinho</h1>
+    
+    <div>
+        <button class="btn btn-success" onclick="testearAPI()">🔧 Testar API Diretamente</button>
+        <button class="btn btn-primary" onclick="testearCarrinho()">🛒 Testar Carrinho JS</button>
+        <button class="btn btn-warning" onclick="limparTestes()">🧹 Limpar</button>
+    </div>
+    
+    <div id="resultado" class="resultado">
+        <strong>Clique em um botão para iniciar os testes...</strong>
+    </div>
+    
+    <script>
+        function log(mensagem) {
+            const resultado = document.getElementById('resultado');
+            resultado.innerHTML += new Date().toLocaleTimeString() + ': ' + mensagem + '<br>';
+        }
+        
+        function limparTestes() {
+            document.getElementById('resultado').innerHTML = '<strong>Logs limpos...</strong><br>';
+        }
+        
+        async function testearAPI() {
+            log('🔧 Iniciando teste da API...');
+            
+            try {
+                // Teste 1: Adicionar item
+                log('📡 Testando POST /api/carrinho/adicionar');
+                const response = await fetch('http://localhost:8080/api/carrinho/adicionar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        celular: '11999000000',
+                        tipoProduto: 'boloBase',
+                        nomeProduto: 'Bolo Teste',
+                        preco: 85.00,
+                        quantidade: 1,
+                        categoria: 'bolos'
+                    })
+                });
+                
+                if (response.ok) {
+                    const resultado = await response.json();
+                    log('✅ POST funcionou: ' + JSON.stringify(resultado));
+                } else {
+                    log('❌ POST falhou: ' + response.status + ' ' + response.statusText);
+                }
+                
+                // Teste 2: Buscar carrinho
+                log('📡 Testando GET /api/carrinho/11999000000');
+                const response2 = await fetch('http://localhost:8080/api/carrinho/11999000000');
+                
+                if (response2.ok) {
+                    const resultado2 = await response2.json();
+                    log('✅ GET funcionou. Itens: ' + (resultado2.totalItens || 0));
+                } else {
+                    log('❌ GET falhou: ' + response2.status + ' ' + response2.statusText);
+                }
+                
+            } catch (error) {
+                log('❌ Erro no teste da API: ' + error.message);
+            }
+        }
+        
+        async function testearCarrinho() {
+            log('🛒 Testando carrinho JavaScript...');
+            
+            // Verificar se existe
+            if (typeof window.carrinho !== 'undefined') {
+                log('✅ window.carrinho existe');
+                
+                try {
+                    // Testar obter celular
+                    log('📱 Testando obtenção de celular...');
+                    const celular = await window.carrinho.obterCelular();
+                    if (celular) {
+                        log('✅ Celular obtido: ' + celular);
+                        
+                        // Testar adicionar item
+                        log('🛒 Testando adição de item...');
+                        await window.carrinho.adicionarItem('boloBase', 'Bolo Teste JS', 95.00);
+                        log('✅ Teste de adição concluído');
+                        
+                    } else {
+                        log('❌ Falha ao obter celular');
+                    }
+                } catch (error) {
+                    log('❌ Erro no teste do carrinho: ' + error.message);
+                }
+            } else {
+                log('❌ window.carrinho NÃO existe');
+                
+                // Verificar função global
+                if (typeof adicionarAoCarrinho === 'function') {
+                    log('✅ Função adicionarAoCarrinho existe');
+                    try {
+                        await adicionarAoCarrinho('boloBase', 'Bolo Teste Global', 105.00);
+                        log('✅ Teste da função global concluído');
+                    } catch (error) {
+                        log('❌ Erro na função global: ' + error.message);
+                    }
+                } else {
+                    log('❌ Função adicionarAoCarrinho NÃO existe');
+                }
+            }
+        }
+    </script>
+    
+    <!-- Carregar o script do carrinho -->
+    <script src="/js/carrinho.js"></script>
+</body>
+</html>
