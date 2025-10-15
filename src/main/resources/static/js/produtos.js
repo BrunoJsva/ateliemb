@@ -1,203 +1,388 @@
-// JavaScript específico para a página de produtos
+/* ===== PRODUTOS.JS - FUNCIONALIDADES DA PÁGINA DE PRODUTOS ===== */
 
+// Variáveis globais
+let carrinho = [];
+let carrinhoVisible = false;
+
+// Inicialização quando a página carregar
 document.addEventListener('DOMContentLoaded', function() {
+    initializePage();
+    loadCartFromStorage();
+    addAnimationsOnScroll();
+    setupEventListeners();
+});
+
+// ===== INICIALIZAÇÃO =====
+function initializePage() {
+    // Adiciona animações aos elementos
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.classList.add('fade-in');
+    });
     
-    // Sistema de filtros de produtos
-    const botoesFiltro = document.querySelectorAll('.botao-filtro');
-    const categoriasProdutos = document.querySelectorAll('.categoria-produtos');
-    
-    // Função para filtrar produtos por categoria
-    function filtrarProdutos(categoriaEscolhida) {
-        categoriasProdutos.forEach(categoria => {
-            const categoriaNome = categoria.getAttribute('data-categoria');
-            
-            if (categoriaEscolhida === 'todos' || categoriaNome === categoriaEscolhida) {
-                categoria.style.display = 'block';
-                categoria.classList.remove('oculto');
-                
-                // Animar entrada dos produtos
-                const produtos = categoria.querySelectorAll('.cartao-produto-catalogo');
-                produtos.forEach((produto, index) => {
-                    setTimeout(() => {
-                        produto.style.opacity = '1';
-                        produto.style.transform = 'translateY(0)';
-                    }, index * 100);
-                });
-            } else {
-                categoria.style.display = 'none';
-                categoria.classList.add('oculto');
-            }
+    // Inicializa tooltips se estiver usando Bootstrap
+    if (typeof bootstrap !== 'undefined') {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     }
+}
+
+// ===== GERENCIAMENTO DO CARRINHO =====
+function addToCart(produtoId, nome, preco, imagem) {
+    // Validação dos parâmetros
+    if (!produtoId || !nome || !preco) {
+        showNotification('Erro: Dados do produto inválidos', 'error');
+        return;
+    }
     
-    // Event listeners para os botões de filtro
-    botoesFiltro.forEach(botao => {
-        botao.addEventListener('click', () => {
-            // Remover classe ativo de todos os botões
-            botoesFiltro.forEach(b => b.classList.remove('ativo'));
-            
-            // Adicionar classe ativo ao botão clicado
-            botao.classList.add('ativo');
-            
-            // Filtrar produtos
-            const categoria = botao.getAttribute('data-categoria');
-            filtrarProdutos(categoria);
-            
-            // Scroll suave para o catálogo
-            document.querySelector('.secao-catalogo').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        });
-    });
+    // Procura se o produto já existe no carrinho
+    const existingItem = carrinho.find(item => item.id === produtoId);
     
-    // Sistema de encomenda de produtos - redireciona para Linktree
-    const botoesAdicionar = document.querySelectorAll('.botao-adicionar');
+    if (existingItem) {
+        existingItem.quantidade += 1;
+        showNotification(`Quantidade de "${nome}" aumentada para ${existingItem.quantidade}`, 'success');
+    } else {
+        const newItem = {
+            id: produtoId,
+            nome: nome,
+            preco: parseFloat(preco),
+            imagem: imagem || '/images/default-product.jpg',
+            quantidade: 1
+        };
+        carrinho.push(newItem);
+        showNotification(`"${nome}" adicionado ao carrinho!`, 'success');
+    }
     
-    botoesAdicionar.forEach(botao => {
-        botao.addEventListener('click', function() {
-            // Redirecionar para o Linktree da confeitaria
-            window.open('https://linktr.ee/marliconfeitariaME?fbclid=PAb21jcANRRphleHRuA2FlbQIxMQABp9hJHJABei7o7Woan34n-a_Zi6oTP92U0lWMZ47_sro7uDK8h8qW3UsSg40N_aem_IPTEs8e1EYUOaJq-hfTQdA', '_blank');
-        });
-    });
+    updateCartUI();
+    saveCartToStorage();
+    animateCartIcon();
+}
+
+function removeFromCart(produtoId) {
+    const index = carrinho.findIndex(item => item.id === produtoId);
+    if (index !== -1) {
+        const removedItem = carrinho.splice(index, 1)[0];
+        showNotification(`"${removedItem.nome}" removido do carrinho`, 'warning');
+        updateCartUI();
+        saveCartToStorage();
+    }
+}
+
+function updateQuantity(produtoId, newQuantity) {
+    const item = carrinho.find(item => item.id === produtoId);
+    if (item) {
+        if (newQuantity <= 0) {
+            removeFromCart(produtoId);
+        } else {
+            item.quantidade = parseInt(newQuantity);
+            updateCartUI();
+            saveCartToStorage();
+        }
+    }
+}
+
+function clearCart() {
+    carrinho = [];
+    updateCartUI();
+    saveCartToStorage();
+    showNotification('Carrinho limpo!', 'info');
+}
+
+// ===== INTERFACE DO CARRINHO =====
+function updateCartUI() {
+    const cartCount = document.querySelector('.cart-count');
+    const totalItems = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
     
-    // Função para mostrar notificações
-    function mostrarNotificacao(mensagem) {
-        // Criar elemento de notificação
-        const notificacao = document.createElement('div');
-        notificacao.className = 'notificacao-encomenda';
-        notificacao.innerHTML = `
-            <div class="conteudo-notificacao">
-                <span class="icone-notificacao">🎉</span>
-                <span class="texto-notificacao">${mensagem}</span>
-                <button class="fechar-notificacao" onclick="this.parentElement.parentElement.remove()">✕</button>
+    if (cartCount) {
+        cartCount.textContent = totalItems;
+        cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+    }
+    
+    // Atualiza o valor total se existir elemento na página
+    const totalElement = document.querySelector('.cart-total');
+    if (totalElement) {
+        const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+        totalElement.textContent = `R$ ${total.toFixed(2)}`;
+    }
+}
+
+function toggleCartView() {
+    // Esta função pode ser expandida para mostrar/ocultar um modal do carrinho
+    console.log('Carrinho atual:', carrinho);
+    showCartModal();
+}
+
+function showCartModal() {
+    // Cria modal do carrinho dinamicamente
+    const modalHtml = `
+        <div class="modal fade" id="cartModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fas fa-shopping-cart me-2"></i>Meu Carrinho
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${getCartHTML()}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button type="button" class="btn btn-danger" onclick="clearCart()">Limpar Carrinho</button>
+                        <button type="button" class="btn btn-primary" onclick="finalizarPedido()">Finalizar Pedido</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remove modal existente se houver
+    const existingModal = document.getElementById('cartModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Adiciona novo modal
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+    // Mostra o modal
+    if (typeof bootstrap !== 'undefined') {
+        const modal = new bootstrap.Modal(document.getElementById('cartModal'));
+        modal.show();
+    }
+}
+
+function getCartHTML() {
+    if (carrinho.length === 0) {
+        return `
+            <div class="text-center py-4">
+                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                <h5>Seu carrinho está vazio</h5>
+                <p class="text-muted">Adicione produtos para continuar</p>
             </div>
         `;
-        
-        // Adicionar estilos inline (pode ser movido para CSS)
-        notificacao.style.cssText = `
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            background: #6b8e23;
-            color: white;
-            padding: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            z-index: 9999;
-            max-width: 350px;
-            animation: slideInRight 0.3s ease;
-        `;
-        
-        // Adicionar ao DOM
-        document.body.appendChild(notificacao);
-        
-        // Remover automaticamente após 4 segundos
-        setTimeout(() => {
-            if (notificacao.parentNode) {
-                notificacao.style.animation = 'slideOutRight 0.3s ease';
-                setTimeout(() => {
-                    notificacao.remove();
-                }, 300);
-            }
-        }, 4000);
     }
     
-    // Adicionar animações CSS dinamicamente
-    const estilosAnimacao = document.createElement('style');
-    estilosAnimacao.textContent = `
-        @keyframes slideInRight {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes slideOutRight {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-        
-        .conteudo-notificacao {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .fechar-notificacao {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-            margin-left: auto;
-        }
-        
-        .fechar-notificacao:hover {
-            opacity: 0.7;
-        }
-    `;
-    document.head.appendChild(estilosAnimacao);
+    let html = '<div class="cart-items">';
+    let total = 0;
     
-    // Animação de entrada inicial dos produtos
-    const observadorProdutos = new IntersectionObserver((entries) => {
+    carrinho.forEach(item => {
+        const subtotal = item.preco * item.quantidade;
+        total += subtotal;
+        
+        html += `
+            <div class="cart-item d-flex align-items-center mb-3 p-3 border rounded">
+                <img src="${item.imagem}" alt="${item.nome}" class="me-3" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">${item.nome}</h6>
+                    <small class="text-muted">R$ ${item.preco.toFixed(2)} cada</small>
+                </div>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="updateQuantity(${item.id}, ${item.quantidade - 1})">-</button>
+                    <span class="mx-3 fw-bold">${item.quantidade}</span>
+                    <button class="btn btn-sm btn-outline-secondary" onclick="updateQuantity(${item.id}, ${item.quantidade + 1})">+</button>
+                    <button class="btn btn-sm btn-outline-danger ms-3" onclick="removeFromCart(${item.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="ms-3 fw-bold">
+                    R$ ${subtotal.toFixed(2)}
+                </div>
+            </div>
+        `;
+    });
+    
+    html += `</div>
+        <div class="cart-total-section border-top pt-3 mt-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Total:</h5>
+                <h4 class="mb-0 text-primary">R$ ${total.toFixed(2)}</h4>
+            </div>
+        </div>
+    `;
+    
+    return html;
+}
+
+// ===== ARMAZENAMENTO LOCAL =====
+function saveCartToStorage() {
+    try {
+        localStorage.setItem('ateliemb_carrinho', JSON.stringify(carrinho));
+    } catch (error) {
+        console.error('Erro ao salvar carrinho:', error);
+    }
+}
+
+function loadCartFromStorage() {
+    try {
+        const stored = localStorage.getItem('ateliemb_carrinho');
+        if (stored) {
+            carrinho = JSON.parse(stored);
+            updateCartUI();
+        }
+    } catch (error) {
+        console.error('Erro ao carregar carrinho:', error);
+        carrinho = [];
+    }
+}
+
+// ===== NOTIFICAÇÕES =====
+function showNotification(message, type = 'info') {
+    // Remove notificações existentes
+    const existingNotifications = document.querySelectorAll('.notification');
+    existingNotifications.forEach(notification => notification.remove());
+    
+    // Cria nova notificação
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    const icon = getNotificationIcon(type);
+    notification.innerHTML = `
+        <i class="${icon}"></i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Mostra a notificação
+    setTimeout(() => notification.classList.add('show'), 100);
+    
+    // Remove após 4 segundos
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 400);
+    }, 4000);
+}
+
+function getNotificationIcon(type) {
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-info-circle'
+    };
+    return icons[type] || icons.info;
+}
+
+// ===== ANIMAÇÕES =====
+function animateCartIcon() {
+    const cartIcon = document.querySelector('.cart-float');
+    if (cartIcon) {
+        cartIcon.style.animation = 'bounce 0.5s ease';
+        setTimeout(() => {
+            cartIcon.style.animation = '';
+        }, 500);
+    }
+}
+
+function addAnimationsOnScroll() {
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+                entry.target.classList.add('fade-in');
             }
         });
-    }, {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    });
+    }, { threshold: 0.1 });
     
-    // Observar todos os produtos para animação de entrada
-    document.querySelectorAll('.cartao-produto-catalogo').forEach(produto => {
-        produto.style.opacity = '0';
-        produto.style.transform = 'translateY(20px)';
-        produto.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observadorProdutos.observe(produto);
-    });
-    
-    // Efeito de hover nos preços
-    document.querySelectorAll('.preco-atual').forEach(preco => {
-        preco.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.1)';
-            this.style.transition = 'transform 0.2s ease';
-        });
-        
-        preco.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
-    });
-    
-    // Contador de produtos por categoria (opcional)
-    function contarProdutosPorCategoria() {
-        const contadores = {};
-        
-        categoriasProdutos.forEach(categoria => {
-            const nome = categoria.getAttribute('data-categoria');
-            const quantidade = categoria.querySelectorAll('.cartao-produto-catalogo').length;
-            contadores[nome] = quantidade;
-        });
-        
-        console.log('Produtos por categoria:', contadores);
-        return contadores;
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach(card => observer.observe(card));
+}
+
+// ===== EVENT LISTENERS =====
+function setupEventListeners() {
+    // Listener para o carrinho flutuante
+    const cartFloat = document.querySelector('.cart-float');
+    if (cartFloat) {
+        cartFloat.addEventListener('click', toggleCartView);
     }
     
-    // Executar contagem inicial
-    contarProdutosPorCategoria();
+    // Listeners para botões de adicionar ao carrinho
+    const addButtons = document.querySelectorAll('.btn-add-cart');
+    addButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Adiciona estado de loading
+            this.classList.add('btn-loading');
+            
+            // Remove loading após 500ms
+            setTimeout(() => {
+                this.classList.remove('btn-loading');
+            }, 500);
+        });
+    });
+}
+
+// ===== FINALIZAÇÃO DE PEDIDO =====
+function finalizarPedido() {
+    if (carrinho.length === 0) {
+        showNotification('Carrinho vazio! Adicione produtos antes de finalizar.', 'warning');
+        return;
+    }
     
-    console.log('🍰 JavaScript da página de produtos carregado com sucesso!');
-});
+    // Aqui você pode integrar com o backend ou redirecionar para página de checkout
+    const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+    
+    // Simula processamento
+    showNotification('Processando pedido...', 'info');
+    
+    setTimeout(() => {
+        // Integração com WhatsApp ou sistema de pedidos
+        const mensagem = criarMensagemWhatsApp();
+        const whatsappUrl = `https://wa.me/5511999999999?text=${encodeURIComponent(mensagem)}`;
+        window.open(whatsappUrl, '_blank');
+        
+        showNotification('Pedido enviado! Você será redirecionado para o WhatsApp.', 'success');
+    }, 1500);
+}
+
+function criarMensagemWhatsApp() {
+    const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+    let mensagem = '*Novo Pedido - Ateliê MB*\n\n';
+    
+    carrinho.forEach(item => {
+        mensagem += `• ${item.nome}\n`;
+        mensagem += `  Quantidade: ${item.quantidade}\n`;
+        mensagem += `  Valor unitário: R$ ${item.preco.toFixed(2)}\n`;
+        mensagem += `  Subtotal: R$ ${(item.preco * item.quantidade).toFixed(2)}\n\n`;
+    });
+    
+    mensagem += `*Total: R$ ${total.toFixed(2)}*\n\n`;
+    mensagem += 'Aguardo confirmação e formas de pagamento/entrega.';
+    
+    return mensagem;
+}
+
+// ===== UTILITÁRIOS =====
+function formatPrice(price) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(price);
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// Exporta funções para uso global
+window.addToCart = addToCart;
+window.removeFromCart = removeFromCart;
+window.updateQuantity = updateQuantity;
+window.clearCart = clearCart;
+window.finalizarPedido = finalizarPedido;
+window.toggleCartView = toggleCartView;
+
+console.log('🍰 JavaScript da página de produtos carregado com sucesso!');

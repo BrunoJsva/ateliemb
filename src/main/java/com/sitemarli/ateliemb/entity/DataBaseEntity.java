@@ -28,16 +28,7 @@ import lombok.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class DataBaseEntity {
 
-    /**
-     * Chave primária da tabela PING.
-     */
     @Id
     @EqualsAndHashCode.Include
     private Long id;
-
-    // Lombok gera automaticamente:
-    // - Construtor padrão (@NoArgsConstructor)
-    // - Getters e setters (@Data)
-    // - equals() e hashCode() baseados no ID (@EqualsAndHashCode)
-    // - toString() (@Data)
 }

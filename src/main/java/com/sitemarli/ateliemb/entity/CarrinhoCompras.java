@@ -3,7 +3,6 @@ package com.sitemarli.ateliemb.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.math.BigDecimal;
@@ -36,12 +35,11 @@ public class CarrinhoCompras {
     private BigDecimal valorTotal;
 
     @Column(name = "status", length = 20)
-    private String status; // ABERTO, FINALIZADO, CANCELADO
+    private String status;
 
     @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemCarrinho> itens = new ArrayList<>();
 
-    // Construtores
     public CarrinhoCompras() {
         this.dataCriacao = LocalDateTime.now();
         this.status = "ABERTO";
@@ -53,7 +51,6 @@ public class CarrinhoCompras {
         this.celular = celular;
     }
 
-    // Métodos auxiliares
     public void adicionarItem(ItemCarrinho item) {
         itens.add(item);
         item.setCarrinho(this);
@@ -78,5 +75,4 @@ public class CarrinhoCompras {
         this.valorTotal = BigDecimal.ZERO;
         this.dataAtualizacao = LocalDateTime.now();
     }
-
 }
