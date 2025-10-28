@@ -1,5 +1,6 @@
 package com.sitemarli.ateliemb.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ public class ItemCarrinho {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "celular_carrinho", nullable = false)
+    @JsonBackReference
     private CarrinhoCompras carrinho;
 
     @Column(name = "tipo_produto", length = 50, nullable = false)

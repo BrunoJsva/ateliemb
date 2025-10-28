@@ -1,12 +1,7 @@
 package com.sitemarli.ateliemb.dto;
 
-import lombok.Builder;
-import lombok.With;
-
 import java.math.BigDecimal;
 
-@Builder
-@With
 public record AdicionarItemDTO(
         String celular,
         String tipoProduto,

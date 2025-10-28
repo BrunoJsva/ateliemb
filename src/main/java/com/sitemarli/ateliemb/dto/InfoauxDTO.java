@@ -1,8 +1,5 @@
 package com.sitemarli.ateliemb.dto;
 
-import lombok.Builder;
-import lombok.With;
-
 /**
  * DTO para transportar informações auxiliares sobre o ambiente
  * e a fonte de dados.
@@ -17,7 +14,5 @@ import lombok.With;
  * @author bruno.silva
  * @version 1.0
  */
-@Builder
-@With
 public record InfoauxDTO(String environment, String database) {
 }

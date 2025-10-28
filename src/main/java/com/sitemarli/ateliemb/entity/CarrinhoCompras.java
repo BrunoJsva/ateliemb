@@ -1,5 +1,6 @@
 package com.sitemarli.ateliemb.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,6 +39,7 @@ public class CarrinhoCompras {
     private String status;
 
     @OneToMany(mappedBy = "carrinho", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<ItemCarrinho> itens = new ArrayList<>();
 
     public CarrinhoCompras() {

@@ -210,26 +210,11 @@ class CarrinhoConfeitaria {
         await this.adicionarItem('caixaTransporte', `Caixa ${tamanho}`, preco);
     }
 
-    // Adicionar recheio especial
-    async adicionarRecheioEspecial(nome, preco) {
-        await this.adicionarItem('recheioEspecial', nome, preco);
-    }
-
-    // Adicionar decoração
-    async adicionarDecoracao(nome, preco, categoria = null) {
-        await this.adicionarItem('decoracao', nome, preco, 1, categoria);
-    }
-
     // Remover decoração
     async removerDecoracao(nome) {
         // TODO: Implementar remoção via API quando necessário
         this.mostrarNotificacao(`"${nome}" removido!`, 'info');
         await this.carregarCarrinhoServidor();
-    }
-
-    // Adicionar complemento
-    async adicionarComplemento(nome, precoUnitario, quantidade = 1) {
-        await this.adicionarItem('complemento', nome, precoUnitario, quantidade);
     }
 
     // Atualizar quantidade de complemento
@@ -248,11 +233,6 @@ class CarrinhoConfeitaria {
         // TODO: Implementar remoção via API quando necessário
         this.mostrarNotificacao(`"${nome}" removido!`, 'info');
         await this.carregarCarrinhoServidor();
-    }
-
-    // Adicionar caixa de transporte
-    async adicionarCaixaTransporte(tamanho, preco) {
-        await this.adicionarItem('caixaTransporte', `Caixa ${tamanho}`, preco);
     }
 
     // Adicionar observações
@@ -347,9 +327,9 @@ class CarrinhoConfeitaria {
 
             // Listar todos os itens do carrinho
             itens.forEach(item => {
-                const preco = parseFloat(item.preco || 0);
+                const preco = parseFloat(item.precoUnitario || item.preco || 0);
                 const quantidade = item.quantidade || 1;
-                const subtotal = preco * quantidade;
+                const subtotal = parseFloat(item.subtotal || (preco * quantidade));
                 
                 // Ícone baseado no tipo de produto
                 let icone = '🛒';
@@ -370,9 +350,6 @@ class CarrinhoConfeitaria {
                     </div>
                 `;
             });
-            }
-
-
 
             html += '</div>'; // Fim lista-itens-carrinho
 
@@ -381,13 +358,6 @@ class CarrinhoConfeitaria {
                 <div class="total-carrinho">
                     <span class="label-total">Total:</span>
                     <span class="valor-total">R$ ${total.toFixed(2)}</span>
-                </div>
-            `;
-
-            // Total
-            html += `
-                <div class="total-carrinho">
-                    <strong>Total: R$ ${(this.carrinho.valorTotal || this.carrinho.total || 0).toFixed(2)}</strong>
                 </div>
             `;
 
@@ -402,6 +372,7 @@ class CarrinhoConfeitaria {
                     </button>
                 </div>
             `;
+        }
 
         html += '</div>'; // Fim conteudo-resumo-carrinho
         resumo.innerHTML = html;

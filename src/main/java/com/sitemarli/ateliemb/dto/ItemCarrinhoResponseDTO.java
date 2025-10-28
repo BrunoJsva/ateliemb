@@ -1,13 +1,9 @@
 package com.sitemarli.ateliemb.dto;
 
 import com.sitemarli.ateliemb.entity.ItemCarrinho;
-import lombok.Builder;
-import lombok.With;
 
 import java.math.BigDecimal;
 
-@Builder
-@With
 public record ItemCarrinhoResponseDTO(
         Long id,
         String tipoProduto,

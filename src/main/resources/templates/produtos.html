@@ -215,8 +215,24 @@
     <!-- Carrinho Flutuante -->
     <div class="cart-float" onclick="abrirCarrinho()">
         <i class="fas fa-shopping-cart"></i>
-        <span class="cart-count" id="cartCount">0</span>
+        <span class="cart-count" id="contador-carrinho">0</span>
     </div>
+
+    <!-- Painel Lateral do Carrinho -->
+    <div id="painel-carrinho" class="painel-carrinho">
+        <div class="painel-header">
+            <h3><i class="fas fa-shopping-cart me-2"></i>Meu Carrinho</h3>
+            <button class="btn-fechar-painel" onclick="fecharCarrinho()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="resumo-carrinho" class="painel-body">
+            <p class="text-center text-muted">Carregando...</p>
+        </div>
+    </div>
+    
+    <!-- Overlay -->
+    <div id="overlay-carrinho" class="overlay-carrinho" onclick="fecharCarrinho()"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -234,16 +250,41 @@
             });
         });
         
-        // Atualizar contador do carrinho
-        function atualizarContadorCarrinho() {
-            // Esta função será implementada junto com o sistema de carrinho
-            console.log('Atualizando contador do carrinho...');
+        // Função para abrir o painel do carrinho
+        function abrirCarrinho() {
+            const painel = document.getElementById('painel-carrinho');
+            const overlay = document.getElementById('overlay-carrinho');
+            
+            if (painel && overlay) {
+                painel.classList.add('aberto');
+                overlay.classList.add('ativo');
+                console.log('✅ Carrinho aberto');
+                
+                // Forçar atualização do carrinho ao abrir
+                if (window.carrinho) {
+                    window.carrinho.atualizarInterface();
+                }
+            }
         }
         
-        // Abrir carrinho
-        function abrirCarrinho() {
-            // Esta função será implementada junto com o sistema de carrinho
-            console.log('Abrindo carrinho...');
+        // Função para fechar o painel do carrinho
+        function fecharCarrinho() {
+            const painel = document.getElementById('painel-carrinho');
+            const overlay = document.getElementById('overlay-carrinho');
+            
+            if (painel && overlay) {
+                painel.classList.remove('aberto');
+                overlay.classList.remove('ativo');
+                console.log('✅ Carrinho fechado');
+            }
+        }
+        
+        // Atualizar contador do carrinho
+        function atualizarContadorCarrinho() {
+            console.log('Atualizando contador do carrinho...');
+            if (window.carrinho) {
+                window.carrinho.atualizarContadorCarrinho();
+            }
         }
     </script>
 </body>

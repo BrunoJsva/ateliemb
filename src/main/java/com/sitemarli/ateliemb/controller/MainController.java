@@ -148,17 +148,29 @@ public class MainController {
             
             Map<String, Object> response = new HashMap<>();
             if (carrinhoOpt.isPresent()) {
+                CarrinhoCompras carrinho = carrinhoOpt.get();
+                response.put("existe", true);
                 response.put("sucesso", true);
-                response.put("carrinho", carrinhoOpt.get());
+                response.put("celular", carrinho.getCelular());
+                response.put("nomeCliente", carrinho.getNomeCliente());
+                response.put("valorTotal", carrinho.getValorTotal());
+                response.put("status", carrinho.getStatus());
+                response.put("itens", carrinho.getItens());
+                response.put("totalItens", carrinho.getItens().size());
             } else {
-                response.put("sucesso", false);
+                response.put("existe", false);
+                response.put("sucesso", true);
                 response.put("mensagem", "Carrinho não encontrado");
+                response.put("itens", List.of());
+                response.put("totalItens", 0);
+                response.put("valorTotal", 0);
             }
             
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Erro ao buscar carrinho", e);
             Map<String, Object> error = new HashMap<>();
+            error.put("existe", false);
             error.put("sucesso", false);
             error.put("mensagem", "Erro ao buscar carrinho: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
