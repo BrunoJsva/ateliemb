@@ -195,6 +195,11 @@ class CarrinhoConfeitaria {
         await this.adicionarItem('recheioEspecial', nome, preco);
     }
 
+    // Adicionar personalização (genérico para massa especial e recheios premium)
+    async adicionarPersonalizacao(nome, preco) {
+        await this.adicionarItem('personalizacao', nome, preco);
+    }
+
     // Adicionar decoração
     async adicionarDecoracao(nome, preco, categoria) {
         await this.adicionarItem('decoracao', nome, preco, 1, categoria);
@@ -337,6 +342,7 @@ class CarrinhoConfeitaria {
                     case 'boloBase': icone = '🎂'; break;
                     case 'massaEspecial': icone = '🎨'; break;
                     case 'recheioEspecial': icone = '🍫'; break;
+                    case 'personalizacao': icone = '⭐'; break;
                     case 'decoracao': icone = '✨'; break;
                     case 'complemento': icone = '🍪'; break;
                     case 'caixaTransporte': icone = '📦'; break;
@@ -380,55 +386,120 @@ class CarrinhoConfeitaria {
 
     // Finalizar pedido
     finalizarPedido() {
-        if (!this.carrinho.boloBase) {
+        // Verificar se há pelo menos um bolo base no carrinho
+        const temBoloBase = this.carrinho.itens?.some(item => item.tipoProduto === 'boloBase');
+        
+        if (!temBoloBase) {
             alert('Por favor, selecione pelo menos um bolo base para continuar!');
+            return;
+        }
+
+        // Verificar se o carrinho está vazio
+        if (!this.carrinho.itens || this.carrinho.itens.length === 0) {
+            alert('Seu carrinho está vazio! Adicione produtos antes de finalizar.');
             return;
         }
 
         // Gerar mensagem para WhatsApp/Linktree
         let mensagem = '🎂 *Novo Pedido - Marli Confeitaria*\n\n';
+        mensagem += `📱 *Celular:* ${this.formatarCelular(this.celular)}\n\n`;
 
-        if (this.carrinho.boloBase) {
-            mensagem += `🎂 *Bolo Base:* ${this.carrinho.boloBase.tipo} - R$ ${this.carrinho.boloBase.preco.toFixed(2)}\n`;
-        }
+        // Agrupar itens por tipo
+        const itensPorTipo = {
+            boloBase: [],
+            massaEspecial: [],
+            recheioEspecial: [],
+            personalizacao: [],
+            decoracao: [],
+            complemento: [],
+            caixaTransporte: []
+        };
 
-        if (this.carrinho.massaEspecial) {
-            mensagem += `🎨 *Massa Especial:* ${this.carrinho.massaEspecial.nome} - +R$ ${this.carrinho.massaEspecial.preco.toFixed(2)}\n`;
-        }
+        // Organizar itens por tipo
+        this.carrinho.itens.forEach(item => {
+            const tipo = item.tipoProduto || 'outros';
+            if (itensPorTipo[tipo]) {
+                itensPorTipo[tipo].push(item);
+            }
+        });
 
-        if (this.carrinho.recheioEspecial) {
-            mensagem += `🍫 *Recheio Premium:* ${this.carrinho.recheioEspecial.nome} - +R$ ${this.carrinho.recheioEspecial.preco.toFixed(2)}\n`;
-        }
-
-        if (this.carrinho.decoracoes.length > 0) {
-            mensagem += '\n✨ *Decorações:*\n';
-            this.carrinho.decoracoes.forEach(dec => {
-                mensagem += `  • ${dec.nome} - R$ ${dec.preco.toFixed(2)}\n`;
+        // Adicionar bolos base
+        if (itensPorTipo.boloBase.length > 0) {
+            mensagem += '🎂 *Bolos:*\n';
+            itensPorTipo.boloBase.forEach(item => {
+                mensagem += `  • ${item.nomeProduto} - R$ ${parseFloat(item.subtotal || item.precoUnitario || 0).toFixed(2)}\n`;
             });
+            mensagem += '\n';
         }
 
-        if (this.carrinho.complementos.length > 0) {
-            mensagem += '\n🍬 *Complementos:*\n';
-            this.carrinho.complementos.forEach(comp => {
-                mensagem += `  • ${comp.nome} (${comp.quantidade}x) - R$ ${(comp.precoUnitario * comp.quantidade).toFixed(2)}\n`;
+        // Adicionar massas especiais
+        if (itensPorTipo.massaEspecial.length > 0) {
+            mensagem += '🎨 *Massas Especiais:*\n';
+            itensPorTipo.massaEspecial.forEach(item => {
+                mensagem += `  • ${item.nomeProduto} - R$ ${parseFloat(item.subtotal || item.precoUnitario || 0).toFixed(2)}\n`;
             });
+            mensagem += '\n';
         }
 
-        if (this.carrinho.caixaTransporte) {
-            mensagem += `\n📦 *Caixa:* ${this.carrinho.caixaTransporte.tamanho} - R$ ${this.carrinho.caixaTransporte.preco.toFixed(2)}\n`;
+        // Adicionar recheios especiais
+        if (itensPorTipo.recheioEspecial.length > 0) {
+            mensagem += '🍫 *Recheios Premium:*\n';
+            itensPorTipo.recheioEspecial.forEach(item => {
+                mensagem += `  • ${item.nomeProduto} - R$ ${parseFloat(item.subtotal || item.precoUnitario || 0).toFixed(2)}\n`;
+            });
+            mensagem += '\n';
         }
 
-        if (this.carrinho.observacoes) {
-            mensagem += `\n📝 *Observações:* ${this.carrinho.observacoes}\n`;
+        // Adicionar personalizações
+        if (itensPorTipo.personalizacao.length > 0) {
+            mensagem += '⭐ *Personalizações:*\n';
+            itensPorTipo.personalizacao.forEach(item => {
+                mensagem += `  • ${item.nomeProduto} - R$ ${parseFloat(item.subtotal || item.precoUnitario || 0).toFixed(2)}\n`;
+            });
+            mensagem += '\n';
         }
 
-        mensagem += `\n💰 *TOTAL: R$ ${this.carrinho.total.toFixed(2)}*`;
+        // Adicionar decorações
+        if (itensPorTipo.decoracao.length > 0) {
+            mensagem += '✨ *Decorações:*\n';
+            itensPorTipo.decoracao.forEach(item => {
+                mensagem += `  • ${item.nomeProduto} - R$ ${parseFloat(item.subtotal || item.precoUnitario || 0).toFixed(2)}\n`;
+            });
+            mensagem += '\n';
+        }
+
+        // Adicionar complementos
+        if (itensPorTipo.complemento.length > 0) {
+            mensagem += '� *Complementos:*\n';
+            itensPorTipo.complemento.forEach(item => {
+                const qtd = item.quantidade || 1;
+                mensagem += `  • ${item.nomeProduto}${qtd > 1 ? ` (${qtd}x)` : ''} - R$ ${parseFloat(item.subtotal || item.precoUnitario || 0).toFixed(2)}\n`;
+            });
+            mensagem += '\n';
+        }
+
+        // Adicionar caixas de transporte
+        if (itensPorTipo.caixaTransporte.length > 0) {
+            mensagem += '📦 *Caixas de Transporte:*\n';
+            itensPorTipo.caixaTransporte.forEach(item => {
+                mensagem += `  • ${item.nomeProduto} - R$ ${parseFloat(item.subtotal || item.precoUnitario || 0).toFixed(2)}\n`;
+            });
+            mensagem += '\n';
+        }
+
+        // Total
+        const total = parseFloat(this.carrinho.valorTotal || 0);
+        mensagem += `💰 *TOTAL: R$ ${total.toFixed(2)}*`;
 
         // Salvar mensagem no localStorage para uso posterior
         localStorage.setItem('mensagemPedido', mensagem);
 
-        // Redirecionar para Linktree
-        window.open('https://linktr.ee/marliconfeitariaME?fbclid=PAb21jcANRRphleHRuA2FlbQIxMQABp9hJHJABei7o7Woan34n-a_Zi6oTP92U0lWMZ47_sro7uDK8h8qW3UsSg40N_aem_IPTEs8e1EYUOaJq-hfTQdA', '_blank');
+        // Codificar mensagem para URL
+        const mensagemCodificada = encodeURIComponent(mensagem);
+        
+        // Redirecionar para WhatsApp com mensagem pré-preenchida
+        const numeroWhatsApp = '5511969260041'; // Marli Confeitaria
+        window.open(`https://wa.me/${numeroWhatsApp}?text=${mensagemCodificada}`, '_blank');
 
         // Mostrar mensagem copiável
         this.mostrarMensagemPedido(mensagem);
@@ -450,7 +521,7 @@ class CarrinhoConfeitaria {
                         Fechar
                     </button>
                 </div>
-                <p class="info-modal"><small>💡 Copie esta mensagem e envie através do nosso Linktree!</small></p>
+                <p class="info-modal"><small>💡 Copie esta mensagem e envie através do WhatsApp!</small></p>
             </div>
         `;
         document.body.appendChild(modal);
@@ -539,14 +610,34 @@ async function adicionarAoCarrinho(tipo, ...args) {
     
     try {
         switch(tipo) {
-            case 'boloBase':
-                await carrinhoInstance.adicionarBoloBase(...args);
+            case 'boloBase': {
+                // Verificar se há peso selecionado
+                const peso = sessionStorage.getItem('pesoBolo');
+                if (!peso) {
+                    alert('⚠️ Por favor, selecione o peso do bolo antes de adicionar!');
+                    return;
+                }
+                // Permitir apenas um bolo base no carrinho
+                if (carrinhoInstance.carrinho.itens.some(item => item.tipoProduto === 'boloBase')) {
+                    alert('Já existe um bolo base no carrinho. Remova para adicionar outro.');
+                    return;
+                }
+                // Calcular preço baseado no peso
+                const precoUnitario = args[1]; // segundo argumento é o preço
+                const precoTotal = precoUnitario * parseInt(peso);
+                const nomeBolo = `${args[0]} (${peso}kg)`; // adicionar peso ao nome
+                await carrinhoInstance.adicionarBoloBase(nomeBolo, precoTotal);
                 break;
+            }
             case 'massaEspecial':
                 await carrinhoInstance.adicionarMassaEspecial(...args);
                 break;
             case 'recheioEspecial':
                 await carrinhoInstance.adicionarRecheioEspecial(...args);
+                break;
+            case 'personalizacao':
+                // Personalizações (massa especial ou recheio premium) usam o mesmo método
+                await carrinhoInstance.adicionarPersonalizacao(...args);
                 break;
             case 'decoracao':
                 await carrinhoInstance.adicionarDecoracao(...args);

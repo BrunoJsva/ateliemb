@@ -39,13 +39,22 @@
     <!-- Hero Section -->
     <div class="container" style="margin-top: 100px;">
         <div class="hero-section fade-in">
-            <h1 class="hero-title">
-                <i class="fas fa-birthday-cake me-2"></i>
-                Cardápio Ateliê M&B
-            </h1>
-            <p class="hero-subtitle">
-                Bolos artesanais personalizados para tornar seu momento ainda mais especial
-            </p>
+            <div class="row align-items-center">
+                <div class="col-md-2 text-center mb-1 mb-md-0">
+                    <div style="width: 82%; border-radius: 16px; display: flex; align-items: center; overflow: hidden;">
+                        <img src="/images/confeiteira/CONFEITEIRA_MARLI.jpg" alt="Confeiteira Marli" style="width: 84%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <h1 class="hero-title mb-2">
+                        <i class="fas fa-birthday-cake me-2"></i>
+                        Cardápio Ateliê M&B
+                    </h1>
+                    <p class="hero-subtitle mb-0">
+                        Bolos artesanais personalizados para tornar seu momento ainda mais especial
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- Produtos Base -->
@@ -59,7 +68,7 @@
                 <div class="col-lg-4 col-md-6 mb-3">
                     <div class="product-card fade-in">
                         <div class="text-center">
-                            <div class="product-icon">🎂</div>
+                            <img src="/images/produtos/bolos/BOLO_SEM_FRUTAS.jpg" alt="Bolo SEM FRUTAS" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                             <h3 class="product-title">Bolo SEM FRUTAS</h3>
                             <p class="product-description">Massa simples com recheio tradicional</p>
                             <div class="product-price">R$ 85,00</div>
@@ -81,7 +90,7 @@
                     <div class="product-card fade-in position-relative">
                         <span class="badge-popular">Mais Pedido</span>
                         <div class="text-center">
-                            <div class="product-icon">🍓</div>
+                            <img src="/images/produtos/bolos/BOLO_COM_FRUTAS.jpg" alt="Bolo COM FRUTAS" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                             <h3 class="product-title">Bolo COM FRUTAS</h3>
                             <p class="product-description">Massa simples com frutas frescas</p>
                             <div class="product-price">R$ 95,00</div>
@@ -103,7 +112,7 @@
                 <div class="col-lg-4 col-md-6 mb-3">
                     <div class="product-card fade-in">
                         <div class="text-center">
-                            <div class="product-icon">📦</div>
+                            <img src="/images/produtos/bolos/CAKE_BOARD.jpg" alt="Cake Board MDF" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                             <h3 class="product-title">Cake Board MDF</h3>
                             <p class="product-description">Base reforçada para seu bolo</p>
                             <div class="product-price">+ R$ 5,00</div>
@@ -123,6 +132,100 @@
             </div>
         </div>
 
+        <!-- Opções de Personalização -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-sliders-h me-2" style="color: var(--primary-pink);"></i>
+                Opções de Personalização
+            </h2>
+            
+            <div class="row">
+                <!-- Decorações -->
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="product-card fade-in">
+                        <div class="text-center">
+                            <img src="/images/produtos/bolos/DECORACAO_BOLO.jpg" alt="Decoração do Bolo" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                            <h3 class="product-title">Decorações</h3>
+                            <p class="product-description">Deixe seu bolo ainda mais especial</p>
+                            <ul class="product-features text-start">
+                                <li><i class="fas fa-star"></i> <strong>Topper Simples</strong> - R$ 20,00</li>
+                                <li><i class="fas fa-star"></i> <strong>Topper 3D</strong> - R$ 24,00</li>
+                                <li><i class="fas fa-star"></i> <strong>Brilho Gliter</strong> - R$ 10,00</li>
+                                <li><i class="fas fa-star"></i> <strong>Drip Cake</strong> - R$ 5,00</li>
+                            </ul>
+                            <select id="select-decoracao" class="form-select mb-3">
+                                <option value="">Selecione uma decoração</option>
+                                <option value="20">Topper Simples - R$ 20,00</option>
+                                <option value="24">Topper 3D - R$ 24,00</option>
+                                <option value="10">Brilho Gliter - R$ 10,00</option>
+                                <option value="5">Drip Cake - R$ 5,00</option>
+                            </select>
+                            <button class="btn-add-cart" onclick="adicionarDecoracao()">
+                                <i class="fas fa-shopping-cart me-2"></i>Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sabor da Massa Tradicional -->
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="product-card fade-in">
+                        <div class="text-center">
+                            <img src="/images/produtos/bolos/MASSA_TRADICIONAL.jpg" alt="Massa Tradicional" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                            <h3 class="product-title">Sabor da Massa Tradicional</h3>
+                            <p class="product-description">Escolha o sabor da massa do seu bolo</p>
+                            <ul class="product-features text-start">
+                                <li><i class="fas fa-check-circle"></i> Massa Pão de Ló</li>
+                                <li><i class="fas fa-check-circle"></i> Massa Amanteigada</li>
+                                <li><i class="fas fa-check-circle"></i> Massa Chiffon</li>
+                            </ul>
+                            <select id="select-massa" class="form-select mb-3">
+                                <option value="">Selecione o sabor da massa</option>
+                                <option value="Massa Pão de Ló">Massa Pão de Ló</option>
+                                <option value="Massa Amanteigada">Massa Amanteigada</option>
+                                <option value="Massa Chiffon">Massa Chiffon</option>
+                            </select>
+                            <button class="btn-add-cart" onclick="selecionarMassa()">
+                                <i class="fas fa-check me-2"></i>Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Peso do Bolo -->
+                <div class="col-lg-4 col-md-6 mb-3">
+                    <div class="product-card fade-in">
+                        <div class="text-center">
+                            <img src="/images/produtos/bolos/PESO_BOLO.jpg" alt="Peso do Bolo" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+                            <h3 class="product-title">Peso do Bolo</h3>
+                            <p class="product-description">Defina o tamanho do seu bolo</p>
+                            <ul class="product-features text-start">
+                                <li><i class="fas fa-info-circle"></i> 1kg até 5kg</li>
+                                <li><i class="fas fa-info-circle"></i> Acima de 5kg (até 10kg)</li>
+                                <li><i class="fas fa-info-circle"></i> Preço multiplica pelo peso</li>
+                            </ul>
+                            <select id="select-peso" class="form-select mb-3">
+                                <option value="">Selecione o peso</option>
+                                <option value="1">1 kg</option>
+                                <option value="2">2 kg</option>
+                                <option value="3">3 kg</option>
+                                <option value="4">4 kg</option>
+                                <option value="5">5 kg</option>
+                                <option value="6">6 kg</option>
+                                <option value="7">7 kg</option>
+                                <option value="8">8 kg</option>
+                                <option value="9">9 kg</option>
+                                <option value="10">10 kg</option>
+                            </select>
+                            <button class="btn-add-cart" onclick="selecionarPeso()">
+                                <i class="fas fa-check me-2"></i>Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Personalizações -->
         <div class="section">
             <h2 class="section-title">
@@ -134,16 +237,18 @@
                 <div class="col-lg-6 mb-3">
                     <div class="product-card fade-in">
                         <div class="text-center">
-                            <div class="product-icon">🎨</div>
+                            <img src="/images/produtos/bolos/MASSA_ESPECIAL.webp" alt="Massas Especiais" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                             <h3 class="product-title">Massas Especiais</h3>
                             <p class="product-description">Transforme seu bolo com sabores únicos</p>
                             <div class="product-price">+ R$ 10,00</div>
                             
                             <ul class="product-features text-start">
                                 <li><i class="fas fa-check-circle"></i> Red Velvet</li>
-                                <li><i class="fas fa-check-circle"></i> Chocolate Belga</li>
-                                <li><i class="fas fa-check-circle"></i> Cenoura com Chocolate</li>
-                                <li><i class="fas fa-check-circle"></i> Limão Siciliano</li>
+                                <li><i class="fas fa-check-circle"></i> Massa de Maracujá</li>
+                                <li><i class="fas fa-check-circle"></i> Bolo de Pistache</li>
+                                <li><i class="fas fa-check-circle"></i> Massa de Chocolate com Avelã</li>
+                                <li><i class="fas fa-check-circle"></i> Massa de Chocolate Branco</li>
+                                <li><i class="fas fa-check-circle"></i> Massa de Limão Siciliano</li>
                             </ul>
                             
                             <button class="btn-add-cart" onclick="adicionarAoCarrinho('personalizacao', 'Massas Especiais', 10.00)">
@@ -156,7 +261,7 @@
                 <div class="col-lg-6 mb-3">
                     <div class="product-card fade-in">
                         <div class="text-center">
-                            <div class="product-icon">🍰</div>
+                            <img src="/images/produtos/bolos/RECHEIO_PREMIUM.jpg" alt="Recheios Premium" class="product-image mb-3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                             <h3 class="product-title">Recheios Premium</h3>
                             <p class="product-description">Sabores especiais para momentos únicos</p>
                             <div class="product-price">+ R$ 15,00</div>
@@ -196,15 +301,15 @@
                         <div class="product-icon" style="font-size: 2rem;">🚚</div>
                         <h5 style="color: var(--secondary-pink);">Taxa de Entrega</h5>
                         <p class="product-description">
-                            <span style="color: var(--primary-pink); font-weight: 600;" th:text="${taxaEntrega}">R$ 8,00</span>
+                            <span style="color: var(--primary-pink); font-weight: 600;" th:text="${taxaEntrega}">Apartir de R$ 8,00</span>
                         </p>
                     </div>
                     <div class="col-md-4 mb-3">
                         <div class="product-icon" style="font-size: 2rem;">📞</div>
                         <h5 style="color: var(--secondary-pink);">Contato</h5>
                         <p class="product-description">
-                            WhatsApp: (11) 9999-9999<br>
-                            Email: contato@ateliemb.com
+                            WhatsApp: (11) 96926-0041<br>
+                            Email: marliconfeitaria.ofc@gmail.com
                         </p>
                     </div>
                 </div>
@@ -286,6 +391,75 @@
                 window.carrinho.atualizarContadorCarrinho();
             }
         }
+
+        // Variáveis globais para armazenar seleções
+        let pesoBoloSelecionado = null;
+        let massaTradicionalSelecionada = null;
+
+        // Adicionar Decoração
+        function adicionarDecoracao() {
+            const select = document.getElementById('select-decoracao');
+            const opcaoSelecionada = select.options[select.selectedIndex];
+            
+            if (!select.value) {
+                alert('Por favor, selecione uma decoração!');
+                return;
+            }
+            
+            const nome = opcaoSelecionada.text.split(' - ')[0];
+            const preco = parseFloat(select.value);
+            
+            adicionarAoCarrinho('decoracao', nome, preco);
+            select.selectedIndex = 0; // Resetar seleção
+        }
+
+        // Selecionar Massa Tradicional
+        function selecionarMassa() {
+            const select = document.getElementById('select-massa');
+            
+            if (!select.value) {
+                alert('Por favor, selecione o sabor da massa!');
+                return;
+            }
+            
+            massaTradicionalSelecionada = select.value;
+            alert(`✅ Massa ${massaTradicionalSelecionada} selecionada!\n\nEsta será a massa do seu bolo.`);
+            
+            // Armazenar no sessionStorage
+            sessionStorage.setItem('massaTradicional', massaTradicionalSelecionada);
+        }
+
+        // Selecionar Peso do Bolo
+        function selecionarPeso() {
+            const select = document.getElementById('select-peso');
+            
+            if (!select.value) {
+                alert('Por favor, selecione o peso do bolo!');
+                return;
+            }
+            
+            pesoBoloSelecionado = parseInt(select.value);
+            alert(`✅ Peso selecionado: ${pesoBoloSelecionado}kg\n\nO preço do bolo será calculado como:\n${pesoBoloSelecionado}kg × valor base`);
+            
+            // Armazenar no sessionStorage
+            sessionStorage.setItem('pesoBolo', pesoBoloSelecionado);
+        }
+
+        // Ao carregar a página, recuperar seleções
+        window.addEventListener('DOMContentLoaded', function() {
+            const pesoSalvo = sessionStorage.getItem('pesoBolo');
+            const massaSalva = sessionStorage.getItem('massaTradicional');
+            
+            if (pesoSalvo) {
+                pesoBoloSelecionado = parseInt(pesoSalvo);
+                document.getElementById('select-peso').value = pesoSalvo;
+            }
+            
+            if (massaSalva) {
+                massaTradicionalSelecionada = massaSalva;
+                document.getElementById('select-massa').value = massaSalva;
+            }
+        });
     </script>
 </body>
 </html>
